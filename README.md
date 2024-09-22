@@ -1,2 +1,2 @@
 # CEN3031_PROJ
-TBD Group Project
+Carbon Emissions Recipe Tracker project.
