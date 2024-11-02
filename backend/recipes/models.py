@@ -25,6 +25,13 @@ class Recipe(models.Model):
 
     def __str__(self):
         return self.title
+
+    @property
+    def calculate_total_emissions(self):
+        total = 0
+        for ingredient in self.ingredients.all():
+            total += ingredient.carbon_emission
+        return total
     
 class Category(models.Model): # Recipe Categories
     name = models.CharField(max_length=100, unique=True)
