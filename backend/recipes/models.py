@@ -28,7 +28,7 @@ class Recipe(models.Model):
     
 class Category(models.Model): # Recipe Categories
     name = models.CharField(max_length=100, unique=True)
-    description = description = models.CharField(max_length=300)
+    description = models.CharField(max_length=300)
 
     def __str__(self):
         return self.name
