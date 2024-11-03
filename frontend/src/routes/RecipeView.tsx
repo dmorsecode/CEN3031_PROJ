@@ -1,17 +1,12 @@
 ﻿import Avatar from 'components/Avatar'
 import logo from 'assets/logo.svg'
-
-const randoms = [
-  [1, 2],
-  [3, 4, 5],
-  [6, 7]
-]
+import RecipeCard from '../components/Recipe/RecipeCard'
 
 function HomePage() {
   return (
-    <div className="relative overflow-hidden bg-white">
-      Hello, world!
-    </div>
+    <div className="m-2">
+    <RecipeCard />
+      </div>
   )
 }
 

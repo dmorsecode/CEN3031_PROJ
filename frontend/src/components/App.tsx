@@ -5,7 +5,7 @@ import NavBar from 'components/NavBar'
 
 function App() {
   return (
-    <div>
+    <div className="h-[calc(100vh-4.5rem)]">
       <NavBar />
 
       <Routes>
