@@ -2,7 +2,7 @@ from django.db import models
 
 class Ingredient(models.Model):
     name = models.CharField(max_length=100)
-    carbon_emission = models.DecimalField(max_digits=5, decimal_places=2, default=0)  # Carbon emision measures in kg
+    carbon_emission = models.DecimalField(max_digits=6, decimal_places=2, default=0)  # Carbon emision measures in kg
     category = models.CharField(max_length=50) # Meat, Fruit, etc
 
     def __str__(self):

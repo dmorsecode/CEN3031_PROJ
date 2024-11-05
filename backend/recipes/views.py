@@ -12,12 +12,12 @@ from .serializers import RecipeSerializer, IngredientSerializer, CategorySeriali
 class RecipeCreate(generics.ListCreateAPIView):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
-    permission_classes = [AllowAny]
+    #permission_classes = [AllowAny]
 
 class IngredientCreate(generics.ListCreateAPIView):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
-    permission_classes = [AllowAny]
+    #permission_classes = [AllowAny]
 
 
 class CategoryCreate(generics.ListCreateAPIView):
@@ -29,7 +29,7 @@ class CategoryCreate(generics.ListCreateAPIView):
 class ViewRecipe(generics.RetrieveAPIView):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
-    permission_classes = [AllowAny]
+    #permission_classes = [AllowAny]
 
 
 
