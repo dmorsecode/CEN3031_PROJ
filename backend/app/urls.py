@@ -20,12 +20,14 @@ class UserViewSet(viewsets.ModelViewSet):
 # Routers provide a way of automatically determining the URL conf.
 router = routers.DefaultRouter()
 router.register(r'users', UserViewSet)
-
+ 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     path('', include('recipes.urls')),
     path('', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    path('admin/', admin.site.urls)
+    path('admin/', admin.site.urls),
+    path('accounts/', include('allauth.urls')),
+    path('', include('recipes.urls')),
 ]
