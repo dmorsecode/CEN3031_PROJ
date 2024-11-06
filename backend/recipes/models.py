@@ -11,7 +11,7 @@ class Ingredient(models.Model):
 class Recipe(models.Model):
     title = models.CharField(max_length=100)
     description = models.CharField(max_length=300)
-    ingredients = models.ManyToManyField(Ingredient, related_name='recipe_ingredients')
+    ingredients = models.ManyToManyField(Ingredient, related_name='recipe_ingredients', through='RecipeIngredient')
     instructions = models.TextField(max_length=3000)
     prep_time = models.IntegerField() # In minutes
     cook_time = models.IntegerField() # In minutes
@@ -39,5 +39,11 @@ class Category(models.Model): # Recipe Categories
 
     def __str__(self):
         return self.name
+
+
+class RecipeIngredient(models.Model):
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+    ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
+    amount = models.FloatField()
 
     
