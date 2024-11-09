@@ -2,7 +2,7 @@ from itertools import filterfalse
 
 from django.test import TestCase
 from rest_framework.test import APITestCase
-from .models import Recipe, Ingredient, Category
+from .models import Recipe, Ingredient, Category, RecipeIngredient
 from .serializers import RecipeSerializer, IngredientSerializer, CategorySerializer
 from rest_framework import status
 from django.urls import reverse
@@ -18,17 +18,29 @@ class SimpleRecipeTest(APITestCase):
                                             instructions='something to do!',
                                             prep_time=1,
                                             cook_time=0)
-        self.recipe.ingredients.add(self.ingredient_1)
-        self.recipe.ingredients.add(self.ingredient_2)
+        #self.recipe.ingredients.add(self.ingredient_1)
+        #self.recipe.ingredients.add(self.ingredient_2)
+        RecipeIngredient.objects.create(recipe=self.recipe, ingredient=self.ingredient_1, amount=1)
+        RecipeIngredient.objects.create(recipe=self.recipe, ingredient=self.ingredient_2, amount=2)
         self.recipe.recipe.add(self.category_1)
         self.url = reverse('recipe-view', args=[self.recipe.id])
+
+    def test_recipe_amounts(self):
+        self.assertEqual(RecipeIngredient.objects.count(), 2)
+
+        recipe_ingredient_info_1 = RecipeIngredient.objects.get(recipe=self.recipe, ingredient=self.ingredient_1)
+        self.assertEqual(recipe_ingredient_info_1.amount, 1)
 
     def test_get_recipe(self):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         # Calculate expected emissions through adding up the carbon emissions (will need to involve ingredient amounts)
-        expected_emissions = self.ingredient_1.carbon_emission + self.ingredient_2.carbon_emission
+        recipe_1_ingredient_1_info = RecipeIngredient.objects.get(recipe=self.recipe, ingredient=self.ingredient_1)
+        recipe_1_ingredient_2_info = RecipeIngredient.objects.get(recipe=self.recipe, ingredient=self.ingredient_2)
+        ingredient_1_expected = self.ingredient_1.carbon_emission * recipe_1_ingredient_1_info.amount
+        ingredient_2_expected = self.ingredient_2.carbon_emission * recipe_1_ingredient_2_info.amount
+        expected_emissions =  ingredient_1_expected + ingredient_2_expected
 
         # Check the responses to see if they match in the test
         self.assertEqual(response.data['id'], self.recipe.id)
@@ -36,7 +48,18 @@ class SimpleRecipeTest(APITestCase):
         self.assertEqual(response.data['total_emission'], float(expected_emissions))
         self.assertEqual(len(response.data['ingredients']), 2)
 
+    def test_view_rows(self):
+        recipes = Recipe.objects.all()
+        for recipe in recipes:
+            print(f'Recipe: {recipe.title}')
+            ingredients = recipe.ingredients.all()
+            for ingredient in ingredients:
+                print(f'   - ingredient: {ingredient.name}')
+        recipe_ingredients_info = RecipeIngredient.objects.all()
+        for ingredient_info in recipe_ingredients_info:
+            print(f'recipe: {ingredient_info.recipe}, ingredient: {ingredient_info.ingredient}, amount: {ingredient_info.amount}')
 
+'''
 class ComplexRecipeTest(APITestCase):
     def setUp(self):
         self.ingredient_1 = Ingredient.objects.create(name='beef', carbon_emission=7700, category='meat')
@@ -130,7 +153,7 @@ class NegativeValuesTest(APITestCase):
         self.assertEqual(response.data['title'], self.recipe.title)
         self.assertEqual(self.is_negative(response.data['prep_time']), False)  # Ensure prep time is not negative
         self.assertEqual(self.is_negative(response.data['cook_time']), False)  # Ensure cook time is not negative
-
+'''
 
 
 

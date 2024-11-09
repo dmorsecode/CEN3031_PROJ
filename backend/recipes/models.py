@@ -30,7 +30,7 @@ class Recipe(models.Model):
     def calculate_total_emissions(self):
         total = 0
         for ingredient in self.ingredients.all():
-            total += ingredient.carbon_emission
+            total += ingredient.carbon_emission * RecipeIngredient.objects.get(recipe=self, ingredient=ingredient).amount
         return total
     
 class Category(models.Model): # Recipe Categories
@@ -44,6 +44,6 @@ class Category(models.Model): # Recipe Categories
 class RecipeIngredient(models.Model):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
-    amount = models.FloatField()
+    amount = models.DecimalField(max_digits=6, decimal_places=2, default=0)  # Amount in grams or liters of the specific ingredient in a recipe
 
     
