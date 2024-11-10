@@ -6,6 +6,8 @@ interface Food {
   servingSize: string;
 }
 
+// PLACEHOLDER VALUES - maybe for data we can put it in 
+//    const [recipe] --> stores ingredients, carbon emission, and serving size for info popup 
 const TrackerPage = () => {
   const [foods] = useState<Food[]>([
     { name: 'Apple', emission: 50, servingSize: '1 medium (182g)' },
@@ -17,8 +19,8 @@ const TrackerPage = () => {
   const [dailyEmission, setDailyEmission] = useState(0);
   const [weeklyEmissions, setWeeklyEmissions] = useState<Record<string, Food[]>>({});
   const [allTimeEmissions, setAllTimeEmissions] = useState<Record<string, Food[]>>({});
-  const [infoPopup, setInfoPopup] = useState<Food | null>(null); // Track selected food for info popup
-  const [summaryPopup, setSummaryPopup] = useState<'daily' | 'weekly' | 'allTime' | null>(null); // Popup for emissions summaries
+  const [infoPopup, setInfoPopup] = useState<Food | null>(null); // track selected food for info popup
+  const [summaryPopup, setSummaryPopup] = useState<'daily' | 'weekly' | 'allTime' | null>(null); // popup for total summaries
 
   const getTodayDate = () => new Date().toISOString().split('T')[0];
 
@@ -31,7 +33,7 @@ const TrackerPage = () => {
     const today = getTodayDate();
 
     if (lastDailyReset !== today) {
-      setDailyEmission(0);
+      setDailyEmission(0); // resets emission every day
       localStorage.setItem('lastDailyReset', today);
     } else if (savedDailyEmission) {
       setDailyEmission(Number(savedDailyEmission));
@@ -56,7 +58,7 @@ const TrackerPage = () => {
   };
 
   const handleAddEmission = (food: Food) => {
-    const today = getTodayDate();
+    const today = getTodayDate(); 
     setDailyEmission((prev) => prev + food.emission);
 
     setWeeklyEmissions((prev) => ({
@@ -81,6 +83,7 @@ const TrackerPage = () => {
     }
   };
 
+  // BUTTON FOR TESTING PURPOSES - should be removed for final product 
   const handleReset = () => {
     setDailyEmission(0);
     setWeeklyEmissions({});
@@ -98,7 +101,7 @@ const TrackerPage = () => {
     <div className="p-6">
       <h1 className="text-4xl font-bold">Track Your Carbon Emissions</h1>
       
-      {/* Search input field */}
+      {/* search field */}
       <div className="my-4">
         <input
           type="text"
@@ -109,7 +112,7 @@ const TrackerPage = () => {
         />
       </div>
 
-      {/* Emissions widgets with clickable summaries */}
+      {/* emissions widgets w/ summaries */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div onClick={() => setSummaryPopup('daily')} className="p-4 bg-gray-100 rounded-lg shadow cursor-pointer">
           <h2 className="text-xl font-bold">Total Carbon Emissions Today (grams)</h2>
@@ -129,7 +132,9 @@ const TrackerPage = () => {
         </div>
       </div>
 
-      {/* Food list */}
+      
+      {/* food/recipe list - TO BE CHANGED W ACTUAL DATA*/} 
+      {/* for longer recipe lists, this will need pages + arrow to go through them*/}
       <div className="my-8">
         <h2 className="text-2xl font-bold">Food Emissions</h2>
         <ul className="mt-4 space-y-2">
@@ -151,12 +156,12 @@ const TrackerPage = () => {
         </ul>
       </div>
 
-      {/* Reset button */}
+      {/* reset button - TO BE REMOVED*/}
       <button onClick={handleReset} className="mt-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
         Reset Totals
       </button>
 
-      {/* Info pop-up */}
+      {/* info popup */}
       {infoPopup && (
         <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded shadow-lg relative w-80">
@@ -166,12 +171,12 @@ const TrackerPage = () => {
             <h2 className="text-xl font-bold">{infoPopup.name} Info</h2>
             <p>Serving Size: {infoPopup.servingSize}</p>
             <p>Carbon Emission: {infoPopup.emission} grams</p>
-            {/* Additional information can be added here */}
+            {/* additional information can be added here - FOR RECIPES, serving size + ingredients */}
           </div>
         </div>
       )}
 
-      {/* Emissions summary pop-up */}
+      {/* total summary popup */}
       {summaryPopup && (
         <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded shadow-lg relative w-80 overflow-auto">
