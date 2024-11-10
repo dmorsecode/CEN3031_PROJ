@@ -6,6 +6,7 @@ function NavBar() {
       <div className="flex-1">
         <Link to="/" className="btn btn-ghost text-xl">Home</Link>
         <Link to="/recipe" className="btn btn-ghost text-xl">Recipe</Link>
+        <Link to="/recipe/create" className="btn btn-ghost text-xl">Create New Recipe</Link>
       </div>
       <div className="flex-none">
         <div className="dropdown dropdown-end">
@@ -20,7 +21,7 @@ function NavBar() {
             tabIndex={0}
             className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
             <li>
-              <a className="justify-between">
+              <a className="justify-between" href="http://localhost:8000/accounts/google/login/">
                 Profile
                 <span className="badge">New</span>
               </a>

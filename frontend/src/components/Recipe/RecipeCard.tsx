@@ -19,7 +19,7 @@ const mockInfo = {
   servings: 2,
 }
 
-function RecipeCard() {
+function RecipeCard({editable = false}) {
   return (
     <div className="w-3/4 m-auto">
       <div className="w-full max-h-1/3 h-[33vh] flex flex-col lg:flex-row items-center rounded-t-3xl overflow-hidden mb-2 p-4">
@@ -29,7 +29,7 @@ function RecipeCard() {
           alt={mockInfo.title} />
 
         <div className="md:basis-2/3 h-full">
-          <RecipeInfo title={mockInfo.title} description={mockInfo.description} prep={mockInfo.prepTime} cook={mockInfo.cookTime} servings={mockInfo.servings} />
+          <RecipeInfo title={mockInfo.title} description={mockInfo.description} prep={mockInfo.prepTime} cook={mockInfo.cookTime} servings={mockInfo.servings} editable={editable} />
         </div>
       </div>
       <div className="w-full h-2/3 flex flex-col lg:flex-row items-start gap-2 p-4 pt-0">
