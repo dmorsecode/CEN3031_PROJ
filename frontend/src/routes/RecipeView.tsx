@@ -5,8 +5,8 @@ import RecipeCard from '../components/Recipe/RecipeCard'
 function HomePage() {
   return (
     <div className="m-2">
-    <RecipeCard />
-      </div>
+      <RecipeCard />
+    </div>
   )
 }
 
