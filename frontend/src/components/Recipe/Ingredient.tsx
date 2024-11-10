@@ -4,7 +4,7 @@
       <div className="basis-1/2">
         <p>{amount} {measurement} {ingredient}</p>
       </div>
-      <p className="basis-1/2 text-right">{perKg} <span className="text-sm">kgCO2 / kg</span></p>
+      <p className={`basis-1/2 text-right ${perKg == 0 ? 'hidden' : ''}`}>{perKg} <span className="text-sm">kgCO2 / kg</span></p>
     </div>
   )
 }

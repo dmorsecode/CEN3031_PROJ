@@ -41,8 +41,8 @@ function IngredientList({ ingredientList, editable, addIngredient }: { ingredien
           <p>+</p>
         </button>
       </div>
-      <div className="divider w-full m-auto" />
-      <div className="w-full flex hover:scale-[101%] duration-200">
+      <div className={`divider w-full m-auto ${editable ? 'hidden' : ''}`} />
+      <div className={`w-full flex hover:scale-[101%] duration-200 ${editable ? 'hidden' : ''}`}>
         <p className="basis-1/2">Total Emissions</p>
         <p className="basis-1/2 text-right">{'##'} <span className="text-sm">kgCO2 / kg</span></p>
       </div>
