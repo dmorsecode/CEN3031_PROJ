@@ -23,7 +23,7 @@ function IngredientList({ ingredientList, editable, addIngredient }: { ingredien
         <Ingredient key={index} ingredient={ingredient.ingredient} amount={ingredient.amount}
                     measurement={ingredient.measurement} perKg={ingredient.perKg} />
       ))}
-      <div className="w-full flex gap-1 items-center">
+      <div className={`w-full flex gap-1 items-center ${editable ? '' : 'hidden'}`}>
         <input type="text" placeholder="1" className={`border-2 border-neutral-400 border-dashed p-2 text-center rounded-sm input w-1/5`} id="amtSelector" onChange={(e) => setAmt(parseInt(e.currentTarget.value))} />
         <select className="select select-bordered w-fit" id="unitSelector" onChange={(e) => setUnit(e.target.value)}>
           <option disabled selected>Unit</option>

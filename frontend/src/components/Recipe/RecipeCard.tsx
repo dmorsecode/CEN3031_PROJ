@@ -57,7 +57,6 @@ function RecipeCard({recipe, editable} : {recipe?: any, editable?: boolean}) {
           <div className="card-body border border-neutral border-opacity-10 rounded-b-2xl">
             <h2 className="card-title">INGREDIENTS</h2>
             <IngredientList key={recipeView?.ingredients.Length} ingredientList={recipeView?.ingredients} editable={editable} addIngredient={addIngredient} />
-            {editable ? <button className="btn btn-primary w-full">Edit Ingredients</button> : null}
           </div>
         </div>
         <div

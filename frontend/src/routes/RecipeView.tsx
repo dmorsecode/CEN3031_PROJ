@@ -27,7 +27,7 @@ const mockRecipe = {
 function HomePage() {
   return (
     <div className="m-2">
-      <RecipeCard />
+      <RecipeCard recipe={mockRecipe} />
     </div>
   )
 }
