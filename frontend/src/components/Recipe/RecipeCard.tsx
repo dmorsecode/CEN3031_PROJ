@@ -1,6 +1,7 @@
 import recipeTest from 'assets/recipe_test.jpg'
 import RecipeInfo from 'components/Recipe/RecipeInfo'
-import Ingredient from './Ingredient'
+import IngredientList from './IngredientList'
+import InstructionList from './InstructionList'
 
 const mockIngredients = [
   { ingredient: 'Salmon', amount: 2, measurement: "Filet", perKg: 3.5 },
@@ -36,35 +37,12 @@ function RecipeCard({editable = false}) {
         <div className="basis-1/3 w-full card card-compact shadow-xl border-t-neutral border-t-[12px] !rounded-t-none">
           <div className="card-body border border-neutral border-opacity-10 rounded-b-2xl">
             <h2 className="card-title">INGREDIENTS</h2>
-            <div className="text-md xl:text-lg flex flex-col gap-2">
-              {mockIngredients.map((ingredient, index) => (
-                <Ingredient key={index} ingredient={ingredient.ingredient} amount={ingredient.amount} measurement={ingredient.measurement} perKg={ingredient.perKg} />
-              ))}
-              <div className="divider w-full m-auto" />
-              <div className="w-full flex hover:scale-[101%] duration-200">
-                <p className="basis-1/2">Total Emissions</p>
-                <p className="basis-1/2 text-right">{"##"} <span className="text-sm">kgCO2 / kg</span></p>
-              </div>
-            </div>
+            <IngredientList ingredientList={mockIngredients} />
           </div>
         </div>
         <div
           className="basis-2/3 w-full card card-compact shadow-xl border-t-neutral border-t-[12px] !rounded-t-none">
-          <div className="card-body border border-neutral border-opacity-10 rounded-b-2xl">
-            <div className="text-lg">
-              <h2 className="card-title">Step 1</h2>
-              <p>Do a thing.</p>
-              <div className="divider" />
-              <h2 className="card-title">Step 2</h2>
-              <p>Do a second thing.</p>
-              <div className="divider" />
-              <h2 className="card-title">Step 3</h2>
-              <p>Finish the recipe.</p>
-              <div className="divider" />
-              <h2 className="card-title">Step 4</h2>
-              <p>Serve.</p>
-            </div>
-          </div>
+          <InstructionList instructions={["One", "Two", "Three"]} />
         </div>
       </div>
     </div>
