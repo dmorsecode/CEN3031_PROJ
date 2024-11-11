@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.contrib import admin
 from django.urls import include, path
 from rest_framework import routers, serializers, viewsets
+from recipes import views
 
 
 # Serializers define the API representation.
@@ -29,4 +30,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('account/', include('allauth.urls')),
     path('', include('recipes.urls')),
+    path('get_recipes/', views.get_recipe_list),
+    path('create_recipe/', views.create_recipe),
+    path('delete_recipe/<int:pk>/', views.delete_recipe),
+    path('update_recipe/<int:pk>/', views.update_recipe)
 ]
