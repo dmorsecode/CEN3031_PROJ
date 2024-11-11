@@ -10,6 +10,7 @@ from django.urls import reverse
 # Recipe Creation and Total Emission Test
 class SimpleRecipeTest(APITestCase):
     def setUp(self):
+        #create ingredients, category, recipe, and recipeingredients (for amounts)
         self.ingredient_1 = Ingredient.objects.create(name='apple', carbon_emission=35, category='fruit')
         self.ingredient_2 = Ingredient.objects.create(name='banana', carbon_emission=70, category='fruit')
         self.category_1 = Category.objects.create(name='breakfast', description='first meal!')
@@ -35,7 +36,7 @@ class SimpleRecipeTest(APITestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        # Calculate expected emissions through adding up the carbon emissions (will need to involve ingredient amounts)
+        # Calculate expected emissions through adding up the carbon emissions
         recipe_1_ingredient_1_info = RecipeIngredient.objects.get(recipe=self.recipe, ingredient=self.ingredient_1)
         recipe_1_ingredient_2_info = RecipeIngredient.objects.get(recipe=self.recipe, ingredient=self.ingredient_2)
         ingredient_1_expected = self.ingredient_1.carbon_emission * recipe_1_ingredient_1_info.amount
@@ -48,6 +49,8 @@ class SimpleRecipeTest(APITestCase):
         self.assertEqual(response.data['total_emission'], float(expected_emissions))
         self.assertEqual(len(response.data['ingredients']), 2)
 
+    # test to see what data rows look like
+    '''
     def test_view_rows(self):
         recipes = Recipe.objects.all()
         for recipe in recipes:
@@ -59,7 +62,8 @@ class SimpleRecipeTest(APITestCase):
         for ingredient_info in recipe_ingredients_info:
             print(f'recipe: {ingredient_info.recipe}, ingredient: {ingredient_info.ingredient}, amount: {ingredient_info.amount}')
 
-'''
+    '''
+#tests with more ingredients, and ingredient amounts that are less than 1 and non-whole numbers
 class ComplexRecipeTest(APITestCase):
     def setUp(self):
         self.ingredient_1 = Ingredient.objects.create(name='beef', carbon_emission=7700, category='meat')
@@ -74,25 +78,34 @@ class ComplexRecipeTest(APITestCase):
                                             instructions='Cook the beef and fish. Then cook the rice, and then get a glass of wine. Eat it all up!',
                                             prep_time=35,
                                             cook_time=45)
-        self.recipe.ingredients.add(self.ingredient_1)
-        self.recipe.ingredients.add(self.ingredient_2)
-        self.recipe.ingredients.add(self.ingredient_3)
-        self.recipe.ingredients.add(self.ingredient_4)
-        self.recipe.ingredients.add(self.ingredient_5)
-        self.recipe.ingredients.add(self.ingredient_6)
         self.recipe.recipe.add(self.category_1)
+        self.ingredients_info = [
+        RecipeIngredient.objects.create(recipe=self.recipe, ingredient=self.ingredient_1, amount=200),
+        RecipeIngredient.objects.create(recipe=self.recipe, ingredient=self.ingredient_2, amount=50),
+        RecipeIngredient.objects.create(recipe=self.recipe, ingredient=self.ingredient_3, amount=125),
+        RecipeIngredient.objects.create(recipe=self.recipe, ingredient=self.ingredient_4, amount=0.5),
+        RecipeIngredient.objects.create(recipe=self.recipe, ingredient=self.ingredient_5, amount=121.5),
+        RecipeIngredient.objects.create(recipe=self.recipe, ingredient=self.ingredient_6, amount=0.2) ]
         self.url = reverse('recipe-view', args=[self.recipe.id])
 
     def test_get_recipe(self):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        ingredients_expected = []
+        ingredients_carbon = [self.ingredient_1.carbon_emission, self.ingredient_2.carbon_emission,
+                              self.ingredient_3.carbon_emission, self.ingredient_4.carbon_emission,
+                              self.ingredient_5.carbon_emission, self.ingredient_6.carbon_emission]
 
-        # Calculate expected emissions through adding up the carbon emissions (will need to involve ingredient amounts)
-        expected_emissions = self.ingredient_1.carbon_emission + self.ingredient_2.carbon_emission + self.ingredient_3.carbon_emission + self.ingredient_4.carbon_emission + self.ingredient_5.carbon_emission + self.ingredient_6.carbon_emission
+        for i in range(len(ingredients_carbon)):
+            ingredients_expected.append(ingredients_carbon[i] * self.ingredients_info[i].amount)
+
+        expected_emissions = sum(ingredients_expected)
+        # Calculate expected emissions through adding up the carbon emissions
 
         self.assertEqual(response.data['id'], self.recipe.id)
         self.assertEqual(response.data['title'], self.recipe.title)
         self.assertEqual(response.data['total_emission'], float(expected_emissions))
+        self.assertEqual(len(response.data['recipe']), 1)
         self.assertEqual(len(response.data['ingredients']), 6)  # Ensure the ingredients amount matches up
 
 
@@ -110,8 +123,8 @@ class MultipleCategoriesTest(APITestCase):
                                             instructions='Cook that rice up and cook that fish up, and eat it!',
                                             prep_time=10,
                                             cook_time=30)
-        self.recipe.ingredients.add(self.ingredient_1)
-        self.recipe.ingredients.add(self.ingredient_2)
+        #self.recipe.ingredients.add(self.ingredient_1)
+        #self.recipe.ingredients.add(self.ingredient_2)
         self.recipe.recipe.add(self.category_1)
         self.recipe.recipe.add(self.category_2)
         self.url = reverse('recipe-view', args=[self.recipe.id])
@@ -153,7 +166,7 @@ class NegativeValuesTest(APITestCase):
         self.assertEqual(response.data['title'], self.recipe.title)
         self.assertEqual(self.is_negative(response.data['prep_time']), False)  # Ensure prep time is not negative
         self.assertEqual(self.is_negative(response.data['cook_time']), False)  # Ensure cook time is not negative
-'''
+
 
 
 
