@@ -8,7 +8,8 @@ function RecipeCard({recipe, editable} : {recipe?: any, editable?: boolean}) {
   const [recipeView, setRecipe] = useState(recipe ?? { info: null, instructions: null, ingredients: [] });
 
   function addIngredient(amt: any, unit: any, ingredient: any) {
-    if (!amt || !unit || !ingredient) return;
+    if (!amt) amt = 1;
+    if (!unit || !ingredient) return;
     setRecipe({
       info: recipeView.info,
       instructions: recipeView.instructions,

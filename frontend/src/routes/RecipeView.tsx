@@ -21,7 +21,7 @@ const mockInfo = {
 
 const mockRecipe = {
   info: mockInfo,
-  instructions: "",
+  instructions: "Here's a first step.\nNow a second step.\nFinally a third step.",
   ingredients: mockIngredients,
 }
 
