@@ -13,7 +13,7 @@ function IngredientList({ ingredientList, editable, addIngredient }: { ingredien
   }, [ingredientList])
 
   return (
-    <div className="text-md xl:text-lg flex flex-col gap-2" key={ingredientList.Length}>
+    <div className="text-md xl:text-lg flex flex-col gap-2" key={ingredientList.length}>
       {ingredientsList.map((ingredient: {
         ingredient: string;
         amount: number;
@@ -25,14 +25,13 @@ function IngredientList({ ingredientList, editable, addIngredient }: { ingredien
       ))}
       <div className={`w-full flex gap-1 items-center ${editable ? '' : 'hidden'}`}>
         <input type="text" placeholder="1" className={`border-2 border-neutral-400 border-dashed p-2 text-center rounded-sm input w-1/5`} id="amtSelector" onChange={(e) => setAmt(parseInt(e.currentTarget.value))} />
-        <select className="select select-bordered w-fit" id="unitSelector" onChange={(e) => setUnit(e.target.value)}>
-          <option disabled selected>Unit</option>
-          <option>Cup</option>
-          <option>Tbsp</option>
-          <option>Dash</option>
+        <select defaultValue="Unit" className="select select-bordered w-fit" id="unitSelector" onChange={(e) => setUnit(e.target.value)}>
+          <option disabled>Unit</option>
+          <option>Kg</option>
+          <option>Liter</option>
         </select>
-        <select className="select select-bordered w-full grow" id="ingredientSelector" onChange={(e) => setIngredient(e.target.value)}>
-          <option disabled selected>Ingredient</option>
+        <select defaultValue="Ingredient" className="select select-bordered w-full grow" id="ingredientSelector" onChange={(e) => setIngredient(e.target.value)}>
+          <option disabled>Ingredient</option>
           <option>Salmon</option>
           <option>Apple</option>
           <option>Chocolate Bar</option>

@@ -4,30 +4,14 @@ import IngredientList from './IngredientList'
 import InstructionList from './InstructionList'
 import { useState } from 'react'
 
-const mockIngredients = [
-  { ingredient: 'Salmon', amount: 2, measurement: "Filet", perKg: 3.5 },
-  { ingredient: 'Rice', amount: 1, measurement: "Cup", perKg: 1.2 },
-  { ingredient: 'Broccoli', amount: 1, measurement: "Head", perKg: 0.8 },
-  { ingredient: 'Soy Sauce', amount: 1, measurement: "Tbsp", perKg: 0.5 },
-  { ingredient: 'Garlic', amount: 2, measurement: "Cloves", perKg: 0.3 },
-  { ingredient: 'Ginger', amount: 1, measurement: "Tbsp", perKg: 0.4 },
-]
-
-const mockInfo = {
-  title: "Salmon Whatever",
-  description: "A delicious salmon recipe. Normally, you might have an actual description here, and it might take up a lot of space. Therefore, there is plenty of room. However, it will disappear if the screen size is too small.",
-  prepTime: 10,
-  cookTime: 20,
-  servings: 2,
-}
-
 function RecipeCard({recipe, editable} : {recipe?: any, editable?: boolean}) {
-  const [recipeView, setRecipe] = useState(recipe ?? { info: null, ingredients: [] });
+  const [recipeView, setRecipe] = useState(recipe ?? { info: null, instructions: null, ingredients: [] });
 
   function addIngredient(amt: any, unit: any, ingredient: any) {
     if (!amt || !unit || !ingredient) return;
     setRecipe({
-      ...recipeView.info,
+      info: recipeView.info,
+      instructions: recipeView.instructions,
       ingredients: [
         ...recipeView.ingredients,
         {
@@ -37,6 +21,17 @@ function RecipeCard({recipe, editable} : {recipe?: any, editable?: boolean}) {
           perKg: 0
         }
       ]
+    })
+  }
+
+  function addInstruction(instruction: string[]) {
+    if (!instruction) return;
+    let newInstructions = recipeView.instructions ? recipeView.instructions.split(/\r?\n/) : [];
+    newInstructions.push(instruction);
+    setRecipe({
+      info: recipeView.info,
+      instructions: newInstructions.join('\n'),
+      ingredients: recipeView.ingredients
     })
   }
 
@@ -61,7 +56,7 @@ function RecipeCard({recipe, editable} : {recipe?: any, editable?: boolean}) {
         </div>
         <div
           className="basis-2/3 w-full card card-compact shadow-xl border-t-neutral border-t-[12px] !rounded-t-none">
-          <InstructionList instructions={["One", "Two", "Three"]} />
+          <InstructionList instructions={recipeView?.instructions ? recipeView.instructions.split(/\r?\n/) : []} editable={editable} addInstruction={addInstruction} />
         </div>
       </div>
     </div>
