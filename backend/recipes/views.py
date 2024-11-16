@@ -78,6 +78,87 @@ class RecipeView(APIView):
             return Response({'error':'Recipe not found'}, status=status.HTTP_404_NOT_FOUND)
         recipe.delete()
         return Response({'message': 'Recipe deleted successfully'}, status = status.HTTP_204_NO_CONTENT)
+    
+class IngredientRecipe(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, pk): #Gets ingredient
+        try:
+            ingredient = Ingredient.objects.get(pk = pk)
+        except Ingredient.DoesNotExist:
+            return Response({'error':'ingredient could not be found'}, status= status.HTTP_404_NOT_FOUND)
+        serializer = IngredientSerializer(ingredient)
+        return Response({ingredient.name : serializer.data})
+    
+    def post(self, request): #Create ingredient
+        serializer = IngredientSerializer(data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def put(self, request, pk): #Updates ingredient
+        try:
+            ingredient = Ingredient.objects.get(pk = pk)
+        except Ingredient.DoesNotExist:
+            return Response({'error':'Ingredient not found'}, status=status.HTTP_404_NOT_FOUND)
+    
+
+        serializer = RecipeSerializer(ingredient, data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status= status.HTTP_200_OK)
+        return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request, pk):
+        try:
+            ingredient = Ingredient.objects.get(pk = pk)
+        except Ingredient.DoesNotExist:
+            return Response({'error':'Ingredient not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+        ingredient.delete
+        return Response({'message': 'Ingredient deleted successfully'}, status = status.HTTP_204_NO_CONTENT)
+    
+class CategoryRecipe(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, pk): #Gets category
+        try:
+            category = Category.objects.get(pk = pk)
+        except Category.DoesNotExist:
+            return Response({'error':'Category could not be found'}, status= status.HTTP_404_NOT_FOUND)
+        serializer = CategorySerializer(category)
+        return Response({category.name : serializer.data})
+    
+    def post(self, request): #Create category
+        serializer = CategorySerializer(data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def put(self, request, pk): #Updates ingredient
+        try:
+            category = Category.objects.get(pk = pk)
+        except Category.DoesNotExist:
+            return Response({'error':'Category not found'}, status=status.HTTP_404_NOT_FOUND)
+    
+
+        serializer = RecipeSerializer(category, data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status= status.HTTP_200_OK)
+        return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request, pk):
+        try:
+            category = Category.objects.get(pk = pk)
+        except Category.DoesNotExist:
+            return Response({'error':'Category not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+        category.delete
+        return Response({'message': 'Category deleted successfully'}, status = status.HTTP_204_NO_CONTENT)
+
 
 
 

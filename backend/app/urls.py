@@ -33,4 +33,8 @@ urlpatterns = [
     path('get_recipe_list/', views.get_recipe_list),
     path('recipes/', views.RecipeView.as_view(), name='create_recipe'),
     path('recipes/<int:pk>/', views.RecipeView.as_view(), name='get_update_delete_recipe'),
+    path('ingredients/', views.IngredientRecipe.as_view(), name='create_recipe'),
+    path('ingredients/<int:pk>/', views.IngredientRecipe.as_view(), name='get_create_delete_recipe'),
+    path('categorys/', views.CategoryRecipe.as_view(), name='create_category'),
+    path('category/<int:pk>/', views.CategoryRecipe.as_view(), name='get_create_delete_category')
 ]
