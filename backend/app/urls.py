@@ -30,8 +30,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('account/', include('allauth.urls')),
     path('', include('recipes.urls')),
-    path('get_recipes/', views.get_recipe_list),
-    path('create_recipe/', views.create_recipe),
-    path('delete_recipe/<int:pk>/', views.delete_recipe),
-    path('update_recipe/<int:pk>/', views.update_recipe)
+    path('get_recipe_list/', views.get_recipe_list),
+    path('recipes/', views.RecipeView.as_view(), name='create_recipe'),
+    path('recipes/<int:pk>/', views.RecipeView.as_view(), name='get_update_delete_recipe'),
 ]
