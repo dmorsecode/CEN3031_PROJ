@@ -8,6 +8,20 @@ function IngredientList({ ingredientList, editable, addIngredient, servings, ser
 
   const [ingredientsList, setIngredientList] = useState(ingredientList);
 
+  function calculateTotal() {
+    // calculate total emissions of all ingredients while accounting for serving size
+    let total = 0;
+    ingredientList.forEach((ingredient: {
+      ingredient: string;
+      amount: number;
+      measurement: string;
+      perKg: number
+    }) => {
+      total += ingredient.perKg * (ingredient.amount / servings * servingsMultiplier);
+    });
+    return total;
+  }
+
   useEffect(() => {
     setIngredientList(ingredientList);
   }, [ingredientList])
@@ -43,7 +57,7 @@ function IngredientList({ ingredientList, editable, addIngredient, servings, ser
       <div className={`divider w-full m-auto ${editable ? 'hidden' : ''}`} />
       <div className={`w-full flex hover:scale-[101%] duration-200 ${editable ? 'hidden' : ''}`}>
         <p className="basis-1/2">Total Emissions</p>
-        <p className="basis-1/2 text-right">{'##'} <span className="text-sm">kgCO2</span></p>
+        <p className="basis-1/2 text-right">{calculateTotal()} <span className="text-sm">kgCO2</span></p>
       </div>
     </div>
   )
