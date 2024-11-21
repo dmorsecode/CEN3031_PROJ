@@ -6,6 +6,7 @@ function NavBar() {
       <div className="flex-1">
         <Link to="/" className="btn btn-ghost text-xl">Home</Link>
         <Link to="/recipe" className="btn btn-ghost text-xl">Recipe</Link>
+        <Link to="/recipes" className="btn btn-ghost text-xl">Recipes</Link>
       </div>
       <div className="flex-none">
         <div className="dropdown dropdown-end">
