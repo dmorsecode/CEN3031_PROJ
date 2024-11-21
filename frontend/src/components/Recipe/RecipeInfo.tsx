@@ -1,13 +1,14 @@
-﻿import { useState } from 'react'
+﻿import { useEffect, useState } from 'react'
 
-function RecipeInfo({ title, category, description, prep, cook, servings, editable }: {
+function RecipeInfo({ title, category, description, prep, cook, servings, editable, modifyServings }: {
   title: string,
   category: string,
   description: string,
   prep: number,
   cook: number,
   servings: number,
-  editable: boolean | undefined
+  editable: boolean | undefined,
+  modifyServings: any
 }) {
   const [titleView, setTitle] = useState(title)
   const [descriptionView, setDescription] = useState(description)
@@ -15,6 +16,12 @@ function RecipeInfo({ title, category, description, prep, cook, servings, editab
   const [cookView, setCook] = useState(cook)
   const [servingsView, setServings] = useState(servings)
   const [categoryView, setCategory] = useState(category)
+
+  function changeServings(multiplier: number) {
+    if (servingsView + multiplier < 1) return;
+    setServings(servingsView + multiplier)
+    modifyServings(multiplier)
+  }
 
   if (editable) return (
     <div className="flex flex-col w-full items-center justify-center p-2 h-full">
@@ -83,7 +90,20 @@ function RecipeInfo({ title, category, description, prep, cook, servings, editab
         <p>Cook Time: <span>{cook ?? 0}</span> min
         </p>
         <div className="divider divider-neutral opacity-50 divider-horizontal" />
-        <p>Servings: <span>{servings ?? 1}</span>
+        <p>
+          <button className="btn btn-xs rounded-box btn-neutral mr-2" disabled={servingsView <= 1} onClick={() => changeServings(-1)}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="1.25em" height="1.25em" viewBox="0 0 24 24">
+              <path fill="currentColor" d="M5 12a1 1 0 0 1 1-1h12a1 1 0 1 1 0 2H6a1 1 0 0 1-1-1"></path>
+            </svg>
+          </button>
+          Servings: <span>{servingsView ?? 1}</span>
+          <button className="btn btn-xs rounded-box btn-neutral ml-2" onClick={() => changeServings(1)}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="1.25em" height="1.25em" viewBox="0 0 24 24">
+              <path fill="currentColor"
+                    d="M13 6a1 1 0 1 0-2 0v5H6a1 1 0 1 0 0 2h5v5a1 1 0 1 0 2 0v-5h5a1 1 0 1 0 0-2h-5z"
+                    className="h-full"></path>
+            </svg>
+          </button>
         </p>
       </div>
     </div>

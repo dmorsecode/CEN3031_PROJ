@@ -13,6 +13,7 @@ const mockIngredients = [
 
 const mockInfo = {
   title: "Salmon Whatever",
+  category: "Dinner",
   description: "A delicious salmon recipe. Normally, you might have an actual description here, and it might take up a lot of space. Therefore, there is plenty of room. However, it will disappear if the screen size is too small.",
   prepTime: 10,
   cookTime: 20,

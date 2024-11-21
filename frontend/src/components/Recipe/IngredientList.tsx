@@ -1,7 +1,7 @@
 ﻿import { Key, useEffect, useState } from 'react'
 import Ingredient from './Ingredient'
 
-function IngredientList({ ingredientList, editable, addIngredient }: { ingredientList: any, editable: boolean | undefined, addIngredient: any }) {
+function IngredientList({ ingredientList, editable, addIngredient, servings, servingsMultiplier }: { ingredientList: any, editable: boolean | undefined, addIngredient: any, servings: number, servingsMultiplier: number }) {
   const [amt, setAmt] = useState(0);
   const [unit, setUnit] = useState('');
   const [ingredient, setIngredient] = useState('');
@@ -20,8 +20,8 @@ function IngredientList({ ingredientList, editable, addIngredient }: { ingredien
         measurement: string;
         perKg: number
       }, index: Key) => (
-        <Ingredient key={index} ingredient={ingredient.ingredient} amount={ingredient.amount}
-                    measurement={ingredient.measurement} perKg={ingredient.perKg} />
+        <Ingredient key={index} ingredient={ingredient.ingredient} amount={ingredient.amount / servings * servingsMultiplier}
+                    measurement={ingredient.measurement} perKg={(ingredient.perKg * (ingredient.amount / servings * servingsMultiplier)).toFixed(2)} />
       ))}
       <div className={`w-full flex gap-1 items-center ${editable ? '' : 'hidden'}`}>
         <input type="text" placeholder="1" className={`border-2 border-neutral-400 border-dashed p-2 text-center rounded-sm input w-1/5`} id="amtSelector" onChange={(e) => setAmt(parseInt(e.currentTarget.value))} />
@@ -43,7 +43,7 @@ function IngredientList({ ingredientList, editable, addIngredient }: { ingredien
       <div className={`divider w-full m-auto ${editable ? 'hidden' : ''}`} />
       <div className={`w-full flex hover:scale-[101%] duration-200 ${editable ? 'hidden' : ''}`}>
         <p className="basis-1/2">Total Emissions</p>
-        <p className="basis-1/2 text-right">{'##'} <span className="text-sm">kgCO2 / kg</span></p>
+        <p className="basis-1/2 text-right">{'##'} <span className="text-sm">kgCO2</span></p>
       </div>
     </div>
   )
