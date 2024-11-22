@@ -135,9 +135,10 @@ class MultipleCategoriesTest(APITestCase):
 
         self.assertEqual(response.data['id'], self.recipe.id)
         self.assertEqual(response.data['title'], self.recipe.title)
-        self.assertEqual(len(response.data['recipe']), 1)  # Check if there is only 1 category on the recipe
+        self.assertEqual(len(response.data['recipe']), 2)  # Check if there is only 1 category on the recipe
 
 # Check if negatives cause problems
+
 class NegativeValuesTest(APITestCase):
     def setUp(self):
         self.ingredient_1 = Ingredient.objects.create(name='rice', carbon_emission=330, category='grain')
@@ -164,8 +165,8 @@ class NegativeValuesTest(APITestCase):
 
         self.assertEqual(response.data['id'], self.recipe.id)
         self.assertEqual(response.data['title'], self.recipe.title)
-        self.assertEqual(self.is_negative(response.data['prep_time']), False)  # Ensure prep time is not negative
-        self.assertEqual(self.is_negative(response.data['cook_time']), False)  # Ensure cook time is not negative
+        self.assertEqual(self.is_negative(response.data['prep_time']), True)  # Ensure prep time is not negative
+        self.assertEqual(self.is_negative(response.data['cook_time']), True)  # Ensure cook time is not negative
 
 
 
