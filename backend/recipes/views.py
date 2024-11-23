@@ -10,6 +10,7 @@ from django.http import JsonResponse
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
+from django.core.exceptions import ValidationError
 
 
 def home(request):
@@ -40,6 +41,13 @@ def get_recipe_list(request): #Get recipe list
     serializer = RecipeSerializer(recipes, many= True)
     return Response({'recipes': serializer.data})
 
+@api_view(['GET'])
+@permission_classes([AllowAny])  # This will bypass the permission check
+def get_ingredient_list(request): #Get recipe list
+    ingredients = Ingredient.objects.all()
+    serializer = IngredientSerializer(ingredients, many= True)
+    return Response({'ingredients': serializer.data})
+
 class RecipeView(APIView):
     permission_classes = [AllowAny]
 
@@ -48,28 +56,62 @@ class RecipeView(APIView):
             recipe = Recipe.objects.get(pk = pk)
         except Recipe.DoesNotExist:
             return Response({'error':'Recipe not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+        except ValidationError:
+            return Response({'error':'Invalid recipe ID'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        except Exception as e: #Generic error handling
+            return Response({
+                'error':'An unexpected error occured',
+                'details': str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
         serializer = RecipeSerializer(recipe)
-        return Response({recipe.title : serializer.data})
+        return Response({recipe.title : serializer.data}, status=status.HTTP_200_OK)
     
     def post(self, request): #Creates recipe
-        serializer = RecipeSerializer(data = request.data)
-        if serializer.is_valid():
-            serializer.save()
+        try:
+            serializer = RecipeSerializer(data = request.data) #Deserialize data
+            serializer.is_valid(raise_exception=True) #Validate Data
+            serializer.save() #Saves recipe
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+        except ValidationError as ve: #Handles validation errors
+            return Response({
+                'error':'Validation Error',
+                'details': ve.detail
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        except Exception as e: #Generic error handling
+            return Response({
+                'error':'An unexpected error occured',
+                'details': str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
     def put(self, request, pk): #Updates recipe
         try:
-            recipe = Recipe.objects.get(pk = pk)
+            recipe = Recipe.objects.get(pk = pk)  
+
         except Recipe.DoesNotExist:
             return Response({'error':'Recipe not found'}, status=status.HTTP_404_NOT_FOUND)
-    
-
-        serializer = RecipeSerializer(recipe, data = request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status= status.HTTP_200_OK)
-        return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            serializer = RecipeSerializer(recipe, data = request.data) #Deserializes data
+            serializer.is_valid(raise_exception=True) #Validates data
+            serializer.save() #Updates recipe
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        
+        except ValidationError as ve: #Handles validation errors
+            return Response({
+                'error':'Validation Error',
+                'details': ve.detail
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        except Exception as e: #Generic error handling
+            return Response({
+                'error':'An unexpected error occured',
+                'details': str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
     def delete(self, request, pk): #Deletes recipe
         try:
@@ -87,15 +129,38 @@ class IngredientRecipe(APIView):
             ingredient = Ingredient.objects.get(pk = pk)
         except Ingredient.DoesNotExist:
             return Response({'error':'ingredient could not be found'}, status= status.HTTP_404_NOT_FOUND)
+        
+        except ValidationError:
+            return Response({'error':'Invalid ingredient ID'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        except Exception as e: #Generic error handling
+            return Response({
+                'error':'An unexpected error occured',
+                'details': str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
         serializer = IngredientSerializer(ingredient)
-        return Response({ingredient.name : serializer.data})
+        return Response({ingredient.name : serializer.data}, status= status.HTTP_200_OK)
     
     def post(self, request): #Create ingredient
-        serializer = IngredientSerializer(data = request.data)
-        if serializer.is_valid():
+        try:
+            serializer = IngredientSerializer(data = request.data) #Deserializes data
+            serializer.is_valid(raise_exception=True) #Validate data
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+        except ValidationError as ve:
+            return Response({
+                'error': 'Validation Error',
+                'message': ve.detail
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        except Exception as e:
+            return Response({
+                'message': 'An unexpected error occured',
+                'details': str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
     
     def put(self, request, pk): #Updates ingredient
         try:
@@ -103,12 +168,23 @@ class IngredientRecipe(APIView):
         except Ingredient.DoesNotExist:
             return Response({'error':'Ingredient not found'}, status=status.HTTP_404_NOT_FOUND)
     
-
-        serializer = RecipeSerializer(ingredient, data = request.data)
-        if serializer.is_valid():
-            serializer.save()
+        try:
+            serializer = RecipeSerializer(ingredient, data = request.data) #Deserializes data
+            serializer.is_valid(raise_exception=True) 
+            serializer.save() #Updates recipe
             return Response(serializer.data, status= status.HTTP_200_OK)
-        return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+        
+        except ValidationError as ve: #Handles validation errors
+            return Response({
+                'error':'Validation Error',
+                'details': ve.detail
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        except Exception as e: #Generic error handling
+            return Response({
+                'error':'An unexpected error occured',
+                'details': str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
     def delete(self, request, pk):
         try:
@@ -127,16 +203,42 @@ class CategoryRecipe(APIView):
             category = Category.objects.get(pk = pk)
         except Category.DoesNotExist:
             return Response({'error':'Category could not be found'}, status= status.HTTP_404_NOT_FOUND)
+        
+        except ValidationError:
+            return Response({'error':'Invalid category ID'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        except Exception as e: #Generic error handling
+            return Response({
+                'error':'An unexpected error occured',
+                'details': str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
         serializer = CategorySerializer(category)
-        return Response({category.name : serializer.data})
+        return Response({category.name : serializer.data}, status=status.HTTP_200_OK)
     
     def post(self, request): #Create category
-        serializer = CategorySerializer(data = request.data)
-        if serializer.is_valid():
+        try:
+            serializer = CategorySerializer(data = request.data)
+            serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+        
+        except ValidationError as ve:
+            return Response({
+                'error':'Validation Error',
+                'message':ve.detail
+            })
+        
+        except Exception as e:
+            return Response({
+                'error':'An unexpected error occured',
+                'details': str(e)
+            })
+        
+
+
+
+
     def put(self, request, pk): #Updates ingredient
         try:
             category = Category.objects.get(pk = pk)
