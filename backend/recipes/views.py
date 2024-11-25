@@ -1,24 +1,50 @@
 from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.contrib.auth import logout
 from django.contrib.auth.models import *
+from rest_framework import status, generics
 from rest_framework.response import Response
-from rest_framework import status
 from rest_framework.authtoken.models import Token
-from .models import *
-from .serializers import *
-from django.http import JsonResponse
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
+from .models import *
+from .serializers import *
+from django.http import JsonResponse
+
 from django.core.exceptions import ValidationError
 
+class RecipeCreate(generics.ListCreateAPIView):
+    queryset = Recipe.objects.all()
+    serializer_class = RecipeSerializer
+    #permission_classes = [AllowAny]
 
-def home(request):
-    return render(request, 'recipes/home.html')
+class IngredientCreate(generics.ListCreateAPIView):
+    queryset = Ingredient.objects.all()
+    serializer_class = IngredientSerializer
+    #permission_classes = [AllowAny]
 
-def logout_view(request):
-    logout(request)
-    return redirect('/')
+
+class CategoryCreate(generics.ListCreateAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    #permission_classes = [AllowAny]
+
+
+class ViewRecipe(generics.RetrieveAPIView):
+    queryset = Recipe.objects.all()
+    serializer_class = RecipeSerializer
+    #permission_classes = [AllowAny]
+
+
+
+class UpdateEmissions(generics.RetrieveUpdateAPIView):
+    queryset = Recipe.objects.all()
+    serializer_class = RecipeSerializer
+    permission_classes = [AllowAny]
+
+
+
 
 def register(request):
     username = request.data.get('username')

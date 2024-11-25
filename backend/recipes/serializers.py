@@ -12,9 +12,13 @@ class IngredientSerializer(serializers.ModelSerializer):
 
 
 class RecipeSerializer(serializers.ModelSerializer):
+    total_emission = serializers.SerializerMethodField()
     class Meta:
         model = Recipe
-        fields = ['id', 'title', 'ingredients','instructions', 'prep_time', 'cook_time', 'recipe_category', 'total_emission', 'created_at', 'updated_at']
+        fields = ['id', 'title', 'ingredients','instructions', 'prep_time', 'cook_time', 'recipe', 'total_emission', 'created_at', 'updated_at']
+
+    def get_total_emission(self, obj):
+        return obj.calculate_total_emissions
 
     title = serializers.CharField(validators=[validate_name])
     ingredients = serializers.CharField(validators=[validate_ingredients])

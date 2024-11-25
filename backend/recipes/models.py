@@ -2,7 +2,7 @@ from django.db import models
 
 class Ingredient(models.Model):
     name = models.CharField(max_length=100)
-    carbon_emission = models.DecimalField(max_digits=5, decimal_places=2, default=0)  # Carbon emision measures in kg
+    carbon_emission = models.DecimalField(max_digits=6, decimal_places=2, default=0)  # Carbon emision measures in kg
     category = models.CharField(max_length=50) # Meat, Fruit, etc
 
     def __str__(self):
@@ -11,7 +11,7 @@ class Ingredient(models.Model):
 class Recipe(models.Model):
     title = models.CharField(max_length=100)
     description = models.CharField(max_length=300)
-    ingredients = models.ManyToManyField(Ingredient, related_name='recipes')
+    ingredients = models.ManyToManyField(Ingredient, related_name='recipes')    
     instructions = models.TextField(max_length=3000)
     prep_time = models.IntegerField() # In minutes
     cook_time = models.IntegerField() # In minutes
@@ -25,12 +25,25 @@ class Recipe(models.Model):
 
     def __str__(self):
         return self.title
+
+    @property
+    def calculate_total_emissions(self):
+        total = 0
+        for ingredient in self.ingredients.all():
+            total += ingredient.carbon_emission * RecipeIngredient.objects.get(recipe=self, ingredient=ingredient).amount
+        return total
     
 class Category(models.Model): # Recipe Categories
     name = models.CharField(max_length=100, unique=True)
-    description = description = models.CharField(max_length=300)
+    description = models.CharField(max_length=300)
 
     def __str__(self):
         return self.name
+
+
+class RecipeIngredient(models.Model):
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+    ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
+    amount = models.DecimalField(max_digits=6, decimal_places=2, default=0)  # Amount in grams or liters of the specific ingredient in a recipe
 
     
