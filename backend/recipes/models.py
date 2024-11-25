@@ -11,11 +11,11 @@ class Ingredient(models.Model):
 class Recipe(models.Model):
     title = models.CharField(max_length=100)
     description = models.CharField(max_length=300)
-    ingredients = models.ManyToManyField(Ingredient, related_name='recipe_ingredients', through='RecipeIngredient')
+    ingredients = models.ManyToManyField(Ingredient, related_name='recipes')    
     instructions = models.TextField(max_length=3000)
     prep_time = models.IntegerField() # In minutes
     cook_time = models.IntegerField() # In minutes
-    recipe = models.ManyToManyField('Category', related_name='recipe_category')
+    recipe_category = models.ManyToManyField('Category', related_name='recipe_category')
 
     total_emission = models.DecimalField(max_digits=8, decimal_places=2, default=0)  # Total emission of a recipe
 
