@@ -115,11 +115,24 @@ class RecipeView(APIView):
     
     def delete(self, request, pk): #Deletes recipe
         try:
-            recipe = Recipe.objects.get(pk = pk)
-        except Recipe.DoesNotExist:
-            return Response({'error':'Recipe not found'}, status=status.HTTP_404_NOT_FOUND)
+            recipe = Recipe.objects.get()
+
+        except Recipe.DoesNotExist():
+            raise serializers.ValidationError('Recipe not found')
+        
+        except ValidationError: 
+            return Response({'error':'Invalid ingredient ID'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        except Exception as e: #Generic error handling
+            return Response({
+                'error':'An unexpected error occured',
+                'details': str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
         recipe.delete()
-        return Response({'message': 'Recipe deleted successfully'}, status = status.HTTP_204_NO_CONTENT)
+        return Response({
+            'message': 'Recipe deleted succesfully'}, status=status.HTTP_204_NO_CONTENT)
+
     
 class IngredientRecipe(APIView):
     permission_classes = [AllowAny]
@@ -169,7 +182,7 @@ class IngredientRecipe(APIView):
             return Response({'error':'Ingredient not found'}, status=status.HTTP_404_NOT_FOUND)
     
         try:
-            serializer = RecipeSerializer(ingredient, data = request.data) #Deserializes data
+            serializer = IngredientSerializer(ingredient, data = request.data) #Deserializes data
             serializer.is_valid(raise_exception=True) 
             serializer.save() #Updates recipe
             return Response(serializer.data, status= status.HTTP_200_OK)
@@ -192,8 +205,17 @@ class IngredientRecipe(APIView):
         except Ingredient.DoesNotExist:
             return Response({'error':'Ingredient not found'}, status=status.HTTP_404_NOT_FOUND)
         
-        ingredient.delete
-        return Response({'message': 'Ingredient deleted successfully'}, status = status.HTTP_204_NO_CONTENT)
+        except ValidationError: 
+            return Response({'error':'Invalid ingredient ID'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        except Exception as e: #Generic error handling
+            return Response({
+                'error':'An unexpected error occured',
+                'details': str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        ingredient.delete()
+        return Response({'message': 'Ingredient deleted succesfully'}, status=status.HTTP_204_NO_CONTENT)
     
 class CategoryRecipe(APIView):
     permission_classes = [AllowAny]
@@ -234,23 +256,31 @@ class CategoryRecipe(APIView):
                 'error':'An unexpected error occured',
                 'details': str(e)
             })
+    def put(self, request, pk):
         
-
-
-
-
-    def put(self, request, pk): #Updates ingredient
         try:
             category = Category.objects.get(pk = pk)
         except Category.DoesNotExist:
             return Response({'error':'Category not found'}, status=status.HTTP_404_NOT_FOUND)
-    
-
-        serializer = RecipeSerializer(category, data = request.data)
-        if serializer.is_valid():
-            serializer.save()
+        
+        try:
+            serializer = CategorySerializer(category, data = request.data) #Deserializes data
+            serializer.is_valid(raise_exception=True) 
+            serializer.save() #Updates recipe
             return Response(serializer.data, status= status.HTTP_200_OK)
-        return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+        
+        except ValidationError as ve: #Handles validation errors
+            return Response({
+                'error':'Validation Error',
+                'details': ve.detail
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        except Exception as e: #Generic error handling
+            return Response({
+                'error':'An unexpected error occured',
+                'details': str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
     
     def delete(self, request, pk):
         try:
@@ -258,8 +288,17 @@ class CategoryRecipe(APIView):
         except Category.DoesNotExist:
             return Response({'error':'Category not found'}, status=status.HTTP_404_NOT_FOUND)
         
-        category.delete
-        return Response({'message': 'Category deleted successfully'}, status = status.HTTP_204_NO_CONTENT)
+        except ValidationError: 
+            return Response({'error':'Invalid ingredient ID'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        except Exception as e: #Generic error handling
+            return Response({
+                'error':'An unexpected error occured',
+                'details': str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        category.delete()
+        return Response({'message': 'Category deleted succesfully'}, status=status.HTTP_204_NO_CONTENT)
 
 
 
