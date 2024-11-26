@@ -8,6 +8,8 @@ from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
+from google.oauth2 import id_token
+from google.auth.transport import requests
 from .models import *
 from .serializers import *
 from django.http import JsonResponse
@@ -319,12 +321,87 @@ class CategoryRecipe(APIView):
         
         except Exception as e: #Generic error handling
             return Response({
-                'error':'An unexpected error occured',
+                'error':'An unexpected error occured.',
                 'details': str(e)
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
         category.delete()
-        return Response({'message': 'Category deleted succesfully'}, status=status.HTTP_204_NO_CONTENT)
+        return Response({'message': 'Category deleted succesfully.'}, status=status.HTTP_204_NO_CONTENT)
+
+class GoogleLoginView(APIView):
+
+    permission_classes = [AllowAny]
+
+    def get(self, request, google_id):
+        try:
+            user = User.objects.get(google_id = google_id)
+            serializer = UserSerializer(user)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        
+        except User.DoesNotExist:
+            return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    def post(self, request): #Create user 
+        token = request.data.get('token')
+
+        if not token:
+            return Response({'error': 'Token is required.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            idinfo = id_token.verify_oauth2_token(
+                token,
+                requests.Request(),
+                "YOUR_GOOGLE_CLIENT_ID"
+            )
+            #Extracts user information from token
+            google_id = idinfo['sub'] #Unique google user ID
+            email = idinfo['email']
+            name = idinfo.get('name', '')
+            
+            user, created = User.objects.get_or_create(
+                google_id=google_id,
+                defaults={
+                    'email': email,
+                    'name': name
+                }
+            )
+
+            #If the user already exists, update name
+            if not created:
+                user.name = name
+                user.save()
+            
+            return Response({
+                'message': 'Login successful', 
+                'user_id': user.id
+            }, status=status.HTTP_200_OK)
+        
+        except ValueError:
+            return Response({'error': 'Invalid token'})
+        
+        except Exception as e: #Catch unexpected errors
+            return Response({
+                'error': str(e),
+                'message': 'Unexpected error occured'
+                }, status = status.HTTP_200_OK)
+    
+    def delete(self, request, google_id):
+        try:
+            user = User.objects.get(google_id = google_id)
+        except User.DoesNotExist:
+            return Response({'error':'User not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+        except ValidationError: 
+            return Response({'error':'Invalid User ID'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        except Exception as e: #Generic error handling
+            return Response({
+                'error':'An unexpected error occured.',
+                'details': str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        user.delete()
+        return Response({'message': 'User deleted succesfully.'}, status=status.HTTP_204_NO_CONTENT)
 
 
 
