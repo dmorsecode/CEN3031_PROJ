@@ -4,9 +4,10 @@ import Ingredient from './Ingredient'
 function IngredientList({ ingredientList, editable, addIngredient, servings, servingsMultiplier }: { ingredientList: any, editable: boolean | undefined, addIngredient: any, servings: number, servingsMultiplier: number }) {
   const [amt, setAmt] = useState(0);
   const [unit, setUnit] = useState('');
-  const [ingredient, setIngredient] = useState('');
+  const [ingredient, setIngredient] = useState({});
 
   const [ingredientsList, setIngredientList] = useState(ingredientList);
+  const [possibleIngredients, setPossibleIngredients] = useState([]);
 
   function calculateTotal() {
     // calculate total emissions of all ingredients while accounting for serving size
@@ -23,6 +24,25 @@ function IngredientList({ ingredientList, editable, addIngredient, servings, ser
   }
 
   useEffect(() => {
+    if (!editable) return;
+    if (possibleIngredients.length !== 0) return;
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    if (!editable) return;
+    const response = await fetch("http://127.0.0.1:8000/get_ingredient_list/");
+    const data = await response.json();
+    // console.log(data.ingredients);
+    // each object in data.ingredients has an id, name, and carbon_emission field. we only care about the name and emissions, so filter it out into an array
+    const ingredients = data.ingredients.map((ingredient: { name: string, carbon_emission: number }) => {
+      return { name: ingredient.name, perKg: ingredient.carbon_emission };
+    });
+    console.log(ingredients);
+    setPossibleIngredients(ingredients);
+  };
+
+  useEffect(() => {
     setIngredientList(ingredientList);
   }, [ingredientList])
 
@@ -34,8 +54,8 @@ function IngredientList({ ingredientList, editable, addIngredient, servings, ser
         measurement: string;
         perKg: number
       }, index: Key) => (
-        <Ingredient key={index} ingredient={ingredient.ingredient} amount={ingredient.amount / servings * servingsMultiplier}
-                    measurement={ingredient.measurement} perKg={(ingredient.perKg * (ingredient.amount / servings * servingsMultiplier)).toFixed(2)} />
+        <Ingredient key={index} ingredient={ingredient.ingredient} amount={!editable ? ingredient.amount / servings * servingsMultiplier : ingredient.amount}
+                    measurement={ingredient.measurement} perKg={!editable ? (ingredient.perKg * (ingredient.amount / servings * servingsMultiplier)).toFixed(2) : (ingredient.perKg * ingredient.amount).toFixed(2)} />
       ))}
       <div className={`w-full flex gap-1 items-center ${editable ? '' : 'hidden'}`}>
         <input type="text" placeholder="1" className={`border-2 border-neutral-400 border-dashed p-2 text-center rounded-sm input w-1/5`} id="amtSelector" onChange={(e) => setAmt(parseInt(e.currentTarget.value))} />
@@ -44,11 +64,11 @@ function IngredientList({ ingredientList, editable, addIngredient, servings, ser
           <option>Kg</option>
           <option>Liter</option>
         </select>
-        <select defaultValue="Ingredient" className="select select-bordered w-full grow" id="ingredientSelector" onChange={(e) => setIngredient(e.target.value)}>
+        <select defaultValue="Ingredient" className="select select-bordered w-full grow" id="ingredientSelector" onChange={(e) => setIngredient(JSON.parse(e.target.value))}>
           <option disabled>Ingredient</option>
-          <option>Salmon</option>
-          <option>Apple</option>
-          <option>Chocolate Bar</option>
+          {possibleIngredients ? possibleIngredients.map((ingredient: { name: string, perKg: number }, index: Key) => (
+            <option key={index} value={JSON.stringify(ingredient)}>{ingredient.name}</option>
+          )) : <option>Loading...</option>}
         </select>
         <button onClick={() => addIngredient(amt, unit, ingredient)} className="btn btn-square btn-ghost !p-0 text-4xl !flex flex-col">
           <p>+</p>

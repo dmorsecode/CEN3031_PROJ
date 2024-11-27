@@ -3,7 +3,7 @@ import HomePage from 'routes/HomePage'
 import RecipeView from 'routes/RecipeView'
 import RecipeCreator from 'routes/RecipeCreator'
 import NavBar from 'components/NavBar'
-import RecipeListing from '../routes/RecipeListing'
+import RecipeListing from 'routes/RecipeListing'
 
 function App() {
   return (
