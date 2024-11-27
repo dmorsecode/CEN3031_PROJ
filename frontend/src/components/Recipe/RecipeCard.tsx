@@ -8,7 +8,7 @@ function RecipeCard({recipe, editable} : {recipe?: any, editable?: boolean}) {
   const [recipeView, setRecipe] = useState(recipe ?? { info: { }, instructions: null, ingredients: [] });
   const [servingsMultiplier, setServingsMultiplier] = useState(recipe && recipe.info ? recipe.info.servings : 1);
 
-  function addIngredient(amt: any, unit: any, ingredient: any) {
+  function addIngredient(amt: any, unit: any, ingredient: { name: string, perKg: string }) {
     if (!amt) amt = 1;
     if (!unit || !ingredient) return;
     setRecipe({
@@ -17,10 +17,10 @@ function RecipeCard({recipe, editable} : {recipe?: any, editable?: boolean}) {
       ingredients: [
         ...recipeView.ingredients,
         {
-          ingredient: ingredient,
+          ingredient: ingredient.name,
           amount: amt,
           measurement: unit,
-          perKg: 0
+          perKg: ingredient.perKg
         }
       ]
     })
