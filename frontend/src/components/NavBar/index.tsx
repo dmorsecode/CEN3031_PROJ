@@ -8,6 +8,7 @@ function NavBar() {
         <Link to="/recipe" className="btn btn-ghost text-xl">Recipe</Link>
         <Link to="/recipe/create" className="btn btn-ghost text-xl">Create New Recipe</Link>
         <Link to="/recipes" className="btn btn-ghost text-xl">Recipes</Link>
+        <Link to="/tracker" className="btn btn-ghost text-xl">Tracker</Link>
       </div>
       <div className="flex-none">
         <div className="dropdown dropdown-end">
