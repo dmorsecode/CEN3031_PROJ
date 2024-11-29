@@ -9,7 +9,7 @@ describe('<App />', () => {
 
     expect(
       screen.getByRole('heading', {
-        name: /Welcome!/i,
+        name: /Welcome to Your Food Carbon Emission Tracker/i,
         level: 1
       })
     ).toBeInTheDocument()
