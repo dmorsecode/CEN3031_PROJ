@@ -107,7 +107,7 @@ const TrackerPage = () => {
           type="text"
           value={search}
           onChange={handleSearch}
-          placeholder="Search for food..."
+          placeholder="Search recipes..."
           className="p-2 border border-gray-300 rounded"
         />
       </div>
@@ -118,7 +118,20 @@ const TrackerPage = () => {
           <h2 className="text-xl font-bold">Total Carbon Emissions Today (grams)</h2>
           <p className="text-2xl font-bold text-red-600">{dailyEmission} grams</p>
         </div>
+        <div onClick={() => setSummaryPopup('weekly')} className="p-4 bg-gray-100 rounded-lg shadow cursor-pointer">
+          <h2 className="text-xl font-bold">Total Carbon Emissions Last 7 Days (grams)</h2>
+          <p className="text-2xl font-bold text-blue-600">
+            {getTotalEmissionForPeriod(weeklyEmissions)} grams
+          </p>
+        </div>
+        <div onClick={() => setSummaryPopup('allTime')} className="p-4 bg-gray-100 rounded-lg shadow cursor-pointer">
+          <h2 className="text-xl font-bold">All-Time Carbon Emissions (grams)</h2>
+          <p className="text-2xl font-bold text-green-600">
+            {getTotalEmissionForPeriod(allTimeEmissions)} grams
+          </p>
+        </div>
       </div>
+      
 
       
       {/* food/recipe list - TO BE CHANGED W ACTUAL DATA*/} 
