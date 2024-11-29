@@ -31,7 +31,7 @@ function IngredientList({ ingredientList, editable, addIngredient, servings, ser
 
   const fetchData = async () => {
     if (!editable) return;
-    const response = await fetch("http://127.0.0.1:8000/get_ingredient_list/");
+    const response = await fetch("http://134.209.114.122:8000/get_ingredient_list/");
     const data = await response.json();
     // console.log(data.ingredients);
     // each object in data.ingredients has an id, name, and carbon_emission field. we only care about the name and emissions, so filter it out into an array
