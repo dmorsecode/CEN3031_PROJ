@@ -37,6 +37,16 @@ jobs:
           key: pnpm-packages-{{ checksum "frontend/pnpm-lock.yaml" }}
           paths:
             - frontend/pnpm-store
+  backend:
+    executor: python/default
+    steps:
+      - checkout
+      - python/load-cache
+      - python/install-deps
+      - python/save-cache
+      - run:
+          command: ./manage.py test
+          name: Backend Tests
 
   run:
     # Specify the execution environment. You can specify an image from Docker Hub or use one of our convenience images from CircleCI's Developer Hub.
@@ -63,3 +73,4 @@ workflows:
     jobs:
       - frontend
       - run
+      - backend
