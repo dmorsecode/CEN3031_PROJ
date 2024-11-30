@@ -8,6 +8,9 @@ jobs:
   backend:
     docker:
       - image: circleci/python:3.10
+      - image: circleci/postgres:15.6
+        environment:
+          DJANGO_SETTINGS_MODULE: app.test_settings
 
     steps:
       - checkout
