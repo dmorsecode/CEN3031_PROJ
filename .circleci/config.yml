@@ -34,7 +34,7 @@ jobs:
           command: |
             . venv/bin/activate
             cd backend
-            python manage.py test --keepdb recipes
+            python manage.py test --keepdb recipes --settings=app.test_settings
       - store_artifacts:
           path: test-reports/
           destination: python_app
