@@ -11,6 +11,12 @@ jobs:
       - image: postgres:15
         environment:
           DJANGO_SETTINGS_MODULE: app.test_settings
+          GOOGLE_API_KEY: $GOOGLE_API_KEY
+          DB_NAME: $DB_NAME
+          DB_USER: $DB_USER
+          DB_PASSWORD: $DB_PASSWORD
+          DB_HOST: $DB_HOST
+          DB_PORT: $DB_PORT
 
     steps:
       - checkout
