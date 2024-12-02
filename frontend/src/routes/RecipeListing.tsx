@@ -1,13 +1,13 @@
-﻿import { useState } from 'react'
+﻿import { useEffect, useState } from 'react'
 
 const recipe1 = {
   id: 0,
   title: 'Salmon Dish',
   description: 'A delicious salmon recipe. This is where the description would go.',
-  prepTime: 10,
-  cookTime: 20,
+  prep_time: 10,
+  cook_time: 20,
   servings: 2,
-  emissions: 50,
+  total_emission: 50,
   category: 'Dinner'
 }
 
@@ -16,10 +16,10 @@ const mockRecipes = [
     id: 0,
     title: 'Salmon Dish',
     description: 'A delicious salmon recipe. This is where the description would go.',
-    prepTime: 10,
-    cookTime: 20,
+    prep_time: 10,
+    cook_time: 20,
     servings: 2,
-    emissions: 50,
+    total_emission: 50,
     category: 'Dinner',
     ingredients: [1, 2, 3]
   },
@@ -27,10 +27,10 @@ const mockRecipes = [
     id: 1,
     title: 'Pasta Dish',
     description: 'A delicious pasta recipe. This is where the description would go.',
-    prepTime: 10,
-    cookTime: 20,
+    prep_time: 10,
+    cook_time: 20,
     servings: 3,
-    emissions: 20,
+    total_emission: 20,
     category: 'Lunch',
     ingredients: [1, 2, 3]
   },
@@ -38,10 +38,10 @@ const mockRecipes = [
     id: 2,
     title: 'Salad Dish',
     description: 'A delicious salad recipe. This is where the description would go.',
-    prepTime: 30,
-    cookTime: 10,
+    prep_time: 30,
+    cook_time: 10,
     servings: 4,
-    emissions: 30,
+    total_emission: 30,
     category: 'Breakfast',
     ingredients: [1, 2]
   },
@@ -49,10 +49,10 @@ const mockRecipes = [
     id: 3,
     title: 'Burger Dish',
     description: 'A delicious burger recipe. This is where the description would go.',
-    prepTime: 20,
-    cookTime: 20,
+    prep_time: 20,
+    cook_time: 20,
     servings: 8,
-    emissions: 100,
+    total_emission: 100,
     category: 'Dinner',
     ingredients: [1, 2, 3, 4]
   },
@@ -60,10 +60,10 @@ const mockRecipes = [
     id: 4,
     title: 'Pizza Dish',
     description: 'A delicious pizza recipe. This is where the description would go.',
-    prepTime: 50,
-    cookTime: 20,
+    prep_time: 50,
+    cook_time: 20,
     servings: 2,
-    emissions: 5,
+    total_emission: 5,
     category: 'Lunch',
     ingredients: [1, 2, 3, 4, 5, 6]
   },
@@ -71,10 +71,10 @@ const mockRecipes = [
     id: 5,
     title: 'Taco Dish',
     description: 'A delicious taco recipe. This is where the description would go.',
-    prepTime: 10,
-    cookTime: 20,
+    prep_time: 10,
+    cook_time: 20,
     servings: 6,
-    emissions: 40,
+    total_emission: 40,
     category: 'Dinner',
     ingredients: [1, 2, 3, 4, 5]
   },
@@ -82,10 +82,10 @@ const mockRecipes = [
     id: 6,
     title: 'Sushi Dish',
     description: 'A delicious sushi recipe. This is where the description would go.',
-    prepTime: 10,
-    cookTime: 20,
+    prep_time: 10,
+    cook_time: 20,
     servings: 2,
-    emissions: 10,
+    total_emission: 10,
     category: 'Lunch',
     ingredients: [1, 2, 3, 4, 5, 6, 7]
   },
@@ -93,10 +93,10 @@ const mockRecipes = [
     id: 7,
     title: 'Curry Dish',
     description: 'A delicious curry recipe. This is where the description would go.',
-    prepTime: 10,
-    cookTime: 20,
+    prep_time: 10,
+    cook_time: 20,
     servings: 4,
-    emissions: 70,
+    total_emission: 70,
     category: 'Dinner',
     ingredients: [1, 2, 3, 4, 5, 6, 7, 8]
   }
@@ -105,25 +105,44 @@ const mockRecipes = [
 function HomePage() {
   const [selectedCategory, setSelectedCategory] = useState('All')
   const [selectedSort, setSelectedSort] = useState('Emissions')
+  const [recipes, setRecipes] = useState(mockRecipes)
 
   function handleSortChange(sort: string) {
     console.log(sort)
-    mockRecipes.sort((a, b) => {
+    recipes.sort((a, b) => {
       switch (sort) {
         case 'Emissions':
-          return b.emissions - a.emissions
+          return b.total_emission - a.total_emission
         case 'Servings':
           return b.servings - a.servings
         case 'Ingredients':
           return b.ingredients.length - a.ingredients.length
         case 'Time':
-          return (b.prepTime + b.cookTime) - (a.prepTime + a.cookTime)
+          return (b.prep_time + b.cook_time) - (a.prep_time + a.cook_time)
         default:
           return 0
       }
     })
     setSelectedSort(sort)
   }
+
+  useEffect(() => {
+    fetchData();
+  }, [])
+
+  const fetchData = async () => {
+    const response = await fetch("http://134.209.114.122:8000/get_recipe_list/");
+    const data = await response.json();
+    // console.log(data.ingredients);
+    // each object in data.ingredients has an id, name, and carbon_emission field. we only care about the name and emissions, so filter it out into an array
+    console.log(data.recipes);
+    // change prep_time and cook_time to ints
+    data.recipes.forEach((recipe: { prep_time: any, cook_time: any }) => {
+      recipe.prep_time = parseInt(recipe.prep_time)
+      recipe.cook_time = parseInt(recipe.cook_time)
+    })
+    setRecipes(data.recipes);
+  };
 
   const breakfastIcon = (
     <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" className="h-full mr-2">
@@ -200,7 +219,7 @@ function HomePage() {
         </ul>
       </div>
       <div className="grow join join-vertical rounded-box">
-        {mockRecipes.filter(recipe => selectedCategory === 'All' || recipe.category === selectedCategory).map((recipe, index) => (
+        {recipes.filter(recipe => selectedCategory === 'All' || recipe.category === selectedCategory).map((recipe, index) => (
           <div key={index} className="collapse collapse-arrow join-item border border-neutral">
             <input type="radio" name="my-accordion-1" />
             <div className="collapse-title text-xl font-medium text-neutral flex align-middle">{recipe.category === 'Breakfast' ? breakfastIcon : recipe.category === 'Lunch' ? lunchIcon : dinnerIcon} {recipe.title}</div>
@@ -208,10 +227,10 @@ function HomePage() {
               <p className="pt-4">{recipe.description}</p>
               <div className="flex justify-between text-md xl:text-xl">
                 <div className="flex gap-8 basis-2/3">
-                  <p className="pt-4"><span className="font-bold text-red-600">Emissions:</span> {recipe.emissions}
+                  <p className="pt-4"><span className="font-bold text-red-600">Emissions:</span> {recipe.total_emission}
                     <span className="text-sm">kgCO2</span></p>
                   <p className="pt-4"><span
-                    className="font-bold text-blue-600">Total Time:</span> {recipe.prepTime + recipe.cookTime} <span
+                    className="font-bold text-blue-600">Total Time:</span> {recipe.prep_time + recipe.cook_time} <span
                     className="text-sm">minutes</span></p>
                   <p className="pt-4"><span className="font-bold text-green-600">Servings:</span> {recipe.servings}</p>
                 </div>
