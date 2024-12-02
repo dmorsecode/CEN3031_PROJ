@@ -8,11 +8,19 @@ class IngredientSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'carbon_emission', 'category']
     
     name = serializers.CharField(validators=[validate_name])
-    carbon_emission = serializers.CharField(validators=[validate_carbon_emission])
+    carbon_emission = serializers.DecimalField(validators=[validate_carbon_emission])
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ['id', 'name', 'description']
+    
+    name = serializers.CharField(validators=[validate_name])
+    description = serializers.CharField(validators=[validate_description])
 
 
 class RecipeSerializer(serializers.ModelSerializer):
-    total_emission = serializers.SerializerMethodField()
+    # total_emission = serializers.SerializerMethodField()
     recipe_category = serializers.StringRelatedField(many=True)
     class Meta:
         model = Recipe
@@ -22,21 +30,13 @@ class RecipeSerializer(serializers.ModelSerializer):
         return obj.calculate_total_emissions
 
     title = serializers.CharField(validators=[validate_name])
-    ingredients = serializers.CharField(validators=[validate_ingredients])
-    prep_time = serializers.CharField(validators=[validate_time])
-    cook_time = serializers.CharField(validators=[validate_time])
-    recipe_category = serializers.CharField(validators=[validate_categories])
-    # total_emission = serializers.CharField(validators=[validate_carbon_emission])
+    ingredients = IngredientSerializer(many=True, validators=[validate_ingredients])
+    prep_time = serializers.IntegerField(validators=[validate_time])
+    cook_time = serializers.IntegerField(validators=[validate_time])
+    recipe_category = CategorySerializer(many=True, validator=[validate_categories])
+    total_emission = serializers.DecimalField(validators=[validate_carbon_emission])
     created_at = serializers.CharField(validators=[validate_date])
     updated_at = serializers.CharField(validators=[validate_date])
-
-class CategorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Category
-        fields = ['id', 'name', 'description']
-    
-    name = serializers.CharField(validators=[validate_name])
-    description = serializers.CharField(validators=[validate_description])
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
