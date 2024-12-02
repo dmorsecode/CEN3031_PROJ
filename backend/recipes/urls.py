@@ -4,6 +4,8 @@ from . import views
 urlpatterns = [
     #path('home/', views.home, name='home'),
     #path('logoout', views.logout_view)
+    path('user/', views.GoogleLoginView.as_view(), name='user-create-view'),
+    path('user/<str:google_id>/', views.GoogleLoginView.as_view(), name='user-view'),
     path('recipes/', views.RecipeCreate.as_view(), name='recipe-create-view'),
     path('ingredient/', views.IngredientCreate.as_view(), name='ingredient-create-view'),
     path('category/', views.CategoryCreate.as_view(), name='category-create-view'),
