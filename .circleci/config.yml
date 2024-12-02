@@ -8,7 +8,7 @@ jobs:
   backend:
     docker:
       - image: circleci/python:3.10
-      - image: postgres:15
+      # - image: postgres:15
         environment:
           DJANGO_SETTINGS_MODULE: app.test_settings
           GOOGLE_API_KEY: $GOOGLE_API_KEY
