@@ -8,7 +8,7 @@ jobs:
   backend:
     docker:
       - image: circleci/python:3.10
-      - image: postgres:15
+      # - image: postgres:15
         environment:
           DJANGO_SETTINGS_MODULE: app.test_settings
           GOOGLE_API_KEY: $GOOGLE_API_KEY
@@ -21,7 +21,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: deps1-{{ .Branch }}-{{ checksum "backend/requirements.txt" }}
+          key: deps1-{{ .Branch }}-{{ .Environment.CACHE_VERSION }}-{{ checksum "backend/requirements.txt" }}
           paths:
             - "backend"
       - run:
@@ -32,7 +32,7 @@ jobs:
             cd backend
             pip install -r requirements.txt
       - save_cache:
-          key: deps1-{{ .Branch }}-{{ checksum "backend/requirements.txt" }}
+          key: deps1-{{ .Branch }}-{{ .Environment.CACHE_VERSION }}-{{ checksum "backend/requirements.txt" }}
           paths:
             - "backend"
       - run:
