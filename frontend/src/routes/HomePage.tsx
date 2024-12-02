@@ -1,16 +1,77 @@
-﻿import Avatar from 'components/Avatar';
-import logo from 'assets/logo.svg';
+﻿import Avatar from 'components/Avatar'
+import logo from 'assets/logo.svg'
+import React, { useState, useEffect } from 'react'
+import { GoogleLogin, googleLogout, useGoogleLogin } from '@react-oauth/google'
+import axios from 'axios'
+import { useContext } from 'react';
+import { UserContext, ProfileContext } from 'components/App';
 
 function HomePage() {
+  const { user, setUser } = useContext(UserContext);
+  const { profile, setProfile } = useContext(ProfileContext);
+
+  const login = useGoogleLogin({
+    onSuccess: (codeResponse) => {
+      console.log(codeResponse);
+      setUser(codeResponse);
+    },
+    onError: (error) => console.log('Login Failed:', error)
+  })
+
+  useEffect(
+    () => {
+      if (user) {
+        axios
+          .get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${user.access_token}`, {
+            headers: {
+              Authorization: `Bearer ${user.access_token}`,
+              Accept: 'application/json'
+            }
+          })
+          .then((res) => {
+            setProfile(res.data)
+            console.log(res.data);
+          })
+          .catch((err) => console.log(err))
+      }
+    },
+    [user]
+  )
+
+  const logOut = () => {
+    googleLogout()
+    setProfile(null)
+  }
+
+  if (!user) {
+    return (
+      <div className="w-full h-full flex items-center">
+        {profile ? (
+          <div>
+            <img src={profile.picture} alt="user image" />
+            <h3>User Logged in</h3>
+            <p>Name: {profile.name}</p>
+            <p>Email Address: {profile.email}</p>
+            <br />
+            <br />
+            <button onClick={logOut}>Log out</button>
+          </div>
+        ) : (
+          <button className="btn btn-lg btn-neutral m-auto" onClick={() => login()}>SIGN IN WITH GOOGLE</button>
+        )}
+      </div>
+    )
+  }
+
   return (
-    <div className="relative overflow-y-auto h-screen bg-white"> 
+    <div className="relative overflow-y-auto h-screen bg-white">
       <div className="sm:pb-40 sm:pt-24 lg:pb-48 lg:pt-40">
         <div className="relative mx-auto max-w-7xl px-4 sm:static sm:px-6 lg:px-8">
 
           {/* header section w/ logo + welcome message */}
           <div className="sm:max-w-lg">
             <div className="my-4">
-              <Avatar size="large" src={logo} /> 
+              <Avatar size="large" src={logo} />
             </div>
             <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
               Welcome to Your Food Carbon Emission Tracker
@@ -39,7 +100,7 @@ function HomePage() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default HomePage;
+export default HomePage
