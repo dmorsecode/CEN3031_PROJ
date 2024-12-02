@@ -7,12 +7,12 @@ import NavBar from 'components/NavBar'
 import RecipeListing from 'routes/RecipeListing'
 import { createContext, useState } from 'react'
 
-export const UserContext = createContext(null)
-export const ProfileContext = createContext(null)
+export const UserContext = createContext({ user: {access_token: ""}, setUser: (user: any) => {} })
+export const ProfileContext = createContext({ profile: {picture: "", name: "", email: ""}, setProfile: (profile: any) => {} })
 
 function App() {
-  const [user, setUser] = useState(null)
-  const [profile, setProfile] = useState(null)
+  const [user, setUser] = useState<any>(null)
+  const [profile, setProfile] = useState<any>(null)
 
   return (
     <UserContext.Provider value={{ user: user, setUser: setUser }}>

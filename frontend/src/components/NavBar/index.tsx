@@ -35,7 +35,7 @@ function NavBar() {
                 <img
                   alt={profile.name}
                   src={profile.picture}
-                  referrerpolicy="no-referrer" />
+                  referrerPolicy="no-referrer" />
               </div>
             </div>
             <ul
