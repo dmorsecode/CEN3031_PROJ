@@ -30,7 +30,7 @@ SECRET_KEY = 'django-insecure-i)+pvu!c%-v@-pe)*b0_^v90zn(j@s!c7$l=csv78q24_w^r&-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['134.209.114.122', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['134.209.114.122', 'localhost', '127.0.0.1', 'cen-3031-proj.vercel.app', 'recipesite-nine.vercel.app']
 
 SITE_ID = 1
 
@@ -80,13 +80,13 @@ REST_FRAMEWORK = {
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'allauth.account.middleware.AccountMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware'
 ]
 
 ROOT_URLCONF = 'app.urls'
