@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Recipe, Ingredient, Category, User
+from .models import Recipe, Ingredient, Category
 from .validators import *
 
 class IngredientSerializer(serializers.ModelSerializer):
@@ -13,9 +13,10 @@ class IngredientSerializer(serializers.ModelSerializer):
 
 class RecipeSerializer(serializers.ModelSerializer):
     total_emission = serializers.SerializerMethodField()
+    recipe_category = serializers.StringRelatedField(many=True)
     class Meta:
         model = Recipe
-        fields = ['id', 'title', 'ingredients','instructions', 'prep_time', 'cook_time', 'recipe', 'total_emission', 'created_at', 'updated_at']
+        fields = ['id', 'title', 'ingredients','instructions', 'prep_time', 'cook_time', 'recipe_category', 'total_emission', 'created_at', 'updated_at']
 
     def get_total_emission(self, obj):
         return obj.calculate_total_emissions
@@ -25,7 +26,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     prep_time = serializers.CharField(validators=[validate_time])
     cook_time = serializers.CharField(validators=[validate_time])
     recipe_category = serializers.CharField(validators=[validate_categories])
-    total_emission = serializers.CharField(validators=[validate_carbon_emission])
+    # total_emission = serializers.CharField(validators=[validate_carbon_emission])
     created_at = serializers.CharField(validators=[validate_date])
     updated_at = serializers.CharField(validators=[validate_date])
 
@@ -36,8 +37,3 @@ class CategorySerializer(serializers.ModelSerializer):
     
     name = serializers.CharField(validators=[validate_name])
     description = serializers.CharField(validators=[validate_description])
-
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['id', 'google_id', 'email', 'name', 'created_at']
