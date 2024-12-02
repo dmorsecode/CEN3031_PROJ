@@ -23,7 +23,7 @@ function NavBar() {
             tabIndex={0}
             className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
             <li>
-              <a className="justify-between" href="http://localhost:8000/accounts/google/login/">
+              <a className="justify-between" href="https://recipesite-ndtwsxwlj-dariancuscos-projects.vercel.app/">
                 Profile
                 <span className="badge">New</span>
               </a>
