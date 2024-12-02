@@ -29,8 +29,10 @@ class Recipe(models.Model):
     @property
     def calculate_total_emissions(self):
         total = 0
-        for ingredient in self.ingredients.all():  # You can keep this if you need the simple M2M emissions
-            total += ingredient.carbon_emission * RecipeIngredient.objects.get(recipe=self, ingredient=ingredient).amount
+        for ingredient in self.ingredients.all():  
+            recipe_ingredient = RecipeIngredient.objects.get(recipe=self, ingredient=ingredient)
+            total += ingredient.carbon_emission * recipe_ingredient.amount
+        print(f"Calculated total_emission in serializer: {total}")
         return total
 
 

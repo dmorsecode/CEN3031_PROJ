@@ -8,7 +8,7 @@ class IngredientSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'carbon_emission', 'category']
     
     name = serializers.CharField(validators=[validate_name])
-    carbon_emission = serializers.DecimalField(validators=[validate_carbon_emission])
+    carbon_emission = serializers.DecimalField(max_digits=8, decimal_places= 2, validators=[validate_carbon_emission])
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -20,21 +20,21 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class RecipeSerializer(serializers.ModelSerializer):
-    # total_emission = serializers.SerializerMethodField()
-    recipe_category = serializers.StringRelatedField(many=True)
+    total_emission = serializers.SerializerMethodField()
+
     class Meta:
         model = Recipe
         fields = ['id', 'title', 'ingredients','instructions', 'prep_time', 'cook_time', 'recipe_category', 'total_emission', 'created_at', 'updated_at']
 
     def get_total_emission(self, obj):
         return obj.calculate_total_emissions
-
+    
     title = serializers.CharField(validators=[validate_name])
     ingredients = IngredientSerializer(many=True, validators=[validate_ingredients])
     prep_time = serializers.IntegerField(validators=[validate_time])
     cook_time = serializers.IntegerField(validators=[validate_time])
-    recipe_category = CategorySerializer(many=True, validator=[validate_categories])
-    total_emission = serializers.DecimalField(validators=[validate_carbon_emission])
+    recipe_category = CategorySerializer(many=True, validators=[validate_categories])
+    # total_emission = serializers.DecimalField(max_digits= 8, decimal_places=2, validators=[validate_carbon_emission])
     created_at = serializers.CharField(validators=[validate_date])
     updated_at = serializers.CharField(validators=[validate_date])
 
