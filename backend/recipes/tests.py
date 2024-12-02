@@ -47,7 +47,7 @@ class SimpleRecipeTest(APITestCase):
         self.assertEqual(response.data['id'], self.recipe.id)
         self.assertEqual(response.data['title'], self.recipe.title)
         self.assertEqual(response.data['total_emission'], float(expected_emissions))
-        # self.assertEqual(len(response.data['ingredients']), 2)  TODO: Fix this test
+        self.assertEqual(len(response.data['ingredients']), 2)
 
     # test to see what data rows look like
     '''
@@ -105,8 +105,8 @@ class ComplexRecipeTest(APITestCase):
         self.assertEqual(response.data['id'], self.recipe.id)
         self.assertEqual(response.data['title'], self.recipe.title)
         self.assertEqual(response.data['total_emission'], float(expected_emissions))
-        # self.assertEqual(len(response.data['recipe_category']), 1) TODO: Fix this test
-        # self.assertEqual(len(response.data['ingredients']), 6)  # Ensure the ingredients amount matches up. TODO: Fix this test
+        self.assertEqual(len(response.data['recipe_category']), 1)
+        self.assertEqual(len(response.data['ingredients']), 6)  # Ensure the ingredients amount matches up.
 
 
 # Edge Case Testing
@@ -125,8 +125,8 @@ class MultipleCategoriesTest(APITestCase):
                                             cook_time=30)
         #self.recipe.ingredients.add(self.ingredient_1)
         #self.recipe.ingredients.add(self.ingredient_2)
-        # self.recipe.recipe_category.add(self.category_1)
-        # self.recipe.recipe_category.add(self.category_2)
+        self.recipe.recipe_category.add(self.category_1)
+        self.recipe.recipe_category.add(self.category_2)
         self.url = reverse('recipe-view', args=[self.recipe.id])
 
     def test_get_recipe(self):
@@ -135,8 +135,7 @@ class MultipleCategoriesTest(APITestCase):
 
         self.assertEqual(response.data['id'], self.recipe.id)
         self.assertEqual(response.data['title'], self.recipe.title)
-        print(response.data['recipe_category'])
-        # self.assertEqual(len(response.data['recipe_category']), 2)  # Check if there is only 1 category on the recipe. TODO: Fix this test
+        self.assertEqual(len(response.data['recipe_category']), 2)  # Check if there is only 1 category on the recipe.
 
 # Check if negatives cause problems
 
