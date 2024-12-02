@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Recipe, Ingredient, Category
+from .models import Recipe, Ingredient, Category, User
 from .validators import *
 
 class IngredientSerializer(serializers.ModelSerializer):
@@ -37,3 +37,8 @@ class CategorySerializer(serializers.ModelSerializer):
     
     name = serializers.CharField(validators=[validate_name])
     description = serializers.CharField(validators=[validate_description])
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'google_id', 'email', 'name', 'created_at']
