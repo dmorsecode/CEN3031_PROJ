@@ -65,7 +65,7 @@ function HomePage() {
     let grabbedRecipe = {
       info: {
         title: data.title,
-        category: data.recipe_category[0].name,
+        category: data.recipe_category[0]?.name ?? "Dinner",
         description: data.description ?? "This recipe has no description.",
         prepTime: data.prep_time,
         cookTime: data.cook_time,
