@@ -12,6 +12,7 @@ function IngredientList({ ingredientList, editable, addIngredient, servings, ser
   function calculateTotal() {
     // calculate total emissions of all ingredients while accounting for serving size
     let total = 0;
+    if (!ingredientList) return 0;
     ingredientList.forEach((ingredient: {
       ingredient: string;
       amount: number;
@@ -35,8 +36,8 @@ function IngredientList({ ingredientList, editable, addIngredient, servings, ser
     const data = await response.json();
     // console.log(data.ingredients);
     // each object in data.ingredients has an id, name, and carbon_emission field. we only care about the name and emissions, so filter it out into an array
-    const ingredients = data.ingredients.map((ingredient: { name: string, carbon_emission: number }) => {
-      return { name: ingredient.name, perKg: ingredient.carbon_emission };
+    const ingredients = data.ingredients.map((ingredient: { name: string, carbon_emission: number, id: number }) => {
+      return { name: ingredient.name, perKg: ingredient.carbon_emission, id: ingredient.id };
     });
     console.log(ingredients);
     setPossibleIngredients(ingredients);
@@ -47,8 +48,8 @@ function IngredientList({ ingredientList, editable, addIngredient, servings, ser
   }, [ingredientList])
 
   return (
-    <div className="text-md xl:text-lg flex flex-col gap-2" key={ingredientList.length}>
-      {ingredientsList.map((ingredient: {
+    <div className="text-md xl:text-lg flex flex-col gap-2" key={ingredientList?.length}>
+      {ingredientsList?.map((ingredient: {
         ingredient: string;
         amount: number;
         measurement: string;

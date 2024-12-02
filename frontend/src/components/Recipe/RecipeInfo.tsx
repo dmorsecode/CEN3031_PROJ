@@ -23,6 +23,15 @@ function RecipeInfo({ title, category, description, prep, cook, servings, editab
     modifyServings(multiplier)
   }
 
+  useEffect(() => {
+    setTitle(title)
+    setDescription(description)
+    setPrep(prep)
+    setCook(cook)
+    setServings(servings)
+    setCategory(category)
+  }, [servings])
+
   if (editable) return (
     <div className="flex flex-col w-full items-center justify-center p-2 h-full">
       <div className="flex gap-x-4">

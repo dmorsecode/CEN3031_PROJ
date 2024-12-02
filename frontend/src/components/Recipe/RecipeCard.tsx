@@ -2,7 +2,7 @@ import recipeTest from 'assets/recipe_test.jpg'
 import RecipeInfo from 'components/Recipe/RecipeInfo'
 import IngredientList from './IngredientList'
 import InstructionList from './InstructionList'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 function RecipeCard({recipe, editable} : {recipe?: any, editable?: boolean}) {
   const [recipeView, setRecipe] = useState(recipe ?? { info: { }, instructions: null, ingredients: [] });
@@ -25,6 +25,11 @@ function RecipeCard({recipe, editable} : {recipe?: any, editable?: boolean}) {
       ]
     })
   }
+
+  useEffect(() => {
+    setRecipe(recipe);
+    setServingsMultiplier(recipe && recipe.info ? recipe.info.servings : 1);
+  }, [recipe])
 
   function modifyServings(multiplier: number) {
     setServingsMultiplier(servingsMultiplier + multiplier);

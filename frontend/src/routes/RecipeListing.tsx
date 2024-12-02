@@ -14,92 +14,103 @@ const recipe1 = {
 const mockRecipes = [
   {
     id: 0,
-    title: 'Salmon Dish',
-    description: 'A delicious salmon recipe. This is where the description would go.',
+    title: '',
+    description: '',
     prep_time: 10,
     cook_time: 20,
     servings: 2,
     total_emission: 50,
-    category: 'Dinner',
+    category: '',
     ingredients: [1, 2, 3]
   },
-  {
-    id: 1,
-    title: 'Pasta Dish',
-    description: 'A delicious pasta recipe. This is where the description would go.',
-    prep_time: 10,
-    cook_time: 20,
-    servings: 3,
-    total_emission: 20,
-    category: 'Lunch',
-    ingredients: [1, 2, 3]
-  },
-  {
-    id: 2,
-    title: 'Salad Dish',
-    description: 'A delicious salad recipe. This is where the description would go.',
-    prep_time: 30,
-    cook_time: 10,
-    servings: 4,
-    total_emission: 30,
-    category: 'Breakfast',
-    ingredients: [1, 2]
-  },
-  {
-    id: 3,
-    title: 'Burger Dish',
-    description: 'A delicious burger recipe. This is where the description would go.',
-    prep_time: 20,
-    cook_time: 20,
-    servings: 8,
-    total_emission: 100,
-    category: 'Dinner',
-    ingredients: [1, 2, 3, 4]
-  },
-  {
-    id: 4,
-    title: 'Pizza Dish',
-    description: 'A delicious pizza recipe. This is where the description would go.',
-    prep_time: 50,
-    cook_time: 20,
-    servings: 2,
-    total_emission: 5,
-    category: 'Lunch',
-    ingredients: [1, 2, 3, 4, 5, 6]
-  },
-  {
-    id: 5,
-    title: 'Taco Dish',
-    description: 'A delicious taco recipe. This is where the description would go.',
-    prep_time: 10,
-    cook_time: 20,
-    servings: 6,
-    total_emission: 40,
-    category: 'Dinner',
-    ingredients: [1, 2, 3, 4, 5]
-  },
-  {
-    id: 6,
-    title: 'Sushi Dish',
-    description: 'A delicious sushi recipe. This is where the description would go.',
-    prep_time: 10,
-    cook_time: 20,
-    servings: 2,
-    total_emission: 10,
-    category: 'Lunch',
-    ingredients: [1, 2, 3, 4, 5, 6, 7]
-  },
-  {
-    id: 7,
-    title: 'Curry Dish',
-    description: 'A delicious curry recipe. This is where the description would go.',
-    prep_time: 10,
-    cook_time: 20,
-    servings: 4,
-    total_emission: 70,
-    category: 'Dinner',
-    ingredients: [1, 2, 3, 4, 5, 6, 7, 8]
-  }
+  // {
+  //   id: 0,
+  //   title: 'Salmon Dish',
+  //   description: 'A delicious salmon recipe. This is where the description would go.',
+  //   prep_time: 10,
+  //   cook_time: 20,
+  //   servings: 2,
+  //   total_emission: 50,
+  //   category: 'Dinner',
+  //   ingredients: [1, 2, 3]
+  // },
+  // {
+  //   id: 1,
+  //   title: 'Pasta Dish',
+  //   description: 'A delicious pasta recipe. This is where the description would go.',
+  //   prep_time: 10,
+  //   cook_time: 20,
+  //   servings: 3,
+  //   total_emission: 20,
+  //   category: 'Lunch',
+  //   ingredients: [1, 2, 3]
+  // },
+  // {
+  //   id: 2,
+  //   title: 'Salad Dish',
+  //   description: 'A delicious salad recipe. This is where the description would go.',
+  //   prep_time: 30,
+  //   cook_time: 10,
+  //   servings: 4,
+  //   total_emission: 30,
+  //   category: 'Breakfast',
+  //   ingredients: [1, 2]
+  // },
+  // {
+  //   id: 3,
+  //   title: 'Burger Dish',
+  //   description: 'A delicious burger recipe. This is where the description would go.',
+  //   prep_time: 20,
+  //   cook_time: 20,
+  //   servings: 8,
+  //   total_emission: 100,
+  //   category: 'Dinner',
+  //   ingredients: [1, 2, 3, 4]
+  // },
+  // {
+  //   id: 4,
+  //   title: 'Pizza Dish',
+  //   description: 'A delicious pizza recipe. This is where the description would go.',
+  //   prep_time: 50,
+  //   cook_time: 20,
+  //   servings: 2,
+  //   total_emission: 5,
+  //   category: 'Lunch',
+  //   ingredients: [1, 2, 3, 4, 5, 6]
+  // },
+  // {
+  //   id: 5,
+  //   title: 'Taco Dish',
+  //   description: 'A delicious taco recipe. This is where the description would go.',
+  //   prep_time: 10,
+  //   cook_time: 20,
+  //   servings: 6,
+  //   total_emission: 40,
+  //   category: 'Dinner',
+  //   ingredients: [1, 2, 3, 4, 5]
+  // },
+  // {
+  //   id: 6,
+  //   title: 'Sushi Dish',
+  //   description: 'A delicious sushi recipe. This is where the description would go.',
+  //   prep_time: 10,
+  //   cook_time: 20,
+  //   servings: 2,
+  //   total_emission: 10,
+  //   category: 'Lunch',
+  //   ingredients: [1, 2, 3, 4, 5, 6, 7]
+  // },
+  // {
+  //   id: 7,
+  //   title: 'Curry Dish',
+  //   description: 'A delicious curry recipe. This is where the description would go.',
+  //   prep_time: 10,
+  //   cook_time: 20,
+  //   servings: 4,
+  //   total_emission: 70,
+  //   category: 'Dinner',
+  //   ingredients: [1, 2, 3, 4, 5, 6, 7, 8]
+  // }
 ]
 
 function HomePage() {
@@ -234,8 +245,7 @@ function HomePage() {
                     className="text-sm">minutes</span></p>
                   <p className="pt-4"><span className="font-bold text-green-600">Servings:</span> {recipe.servings}</p>
                 </div>
-                <button className="btn btn-xs sm:btn-sm md:btn-md btn-info text-info-content text-xl">View Recipe
-                </button>
+                <button className="btn btn-xs sm:btn-sm md:btn-md btn-info text-info-content text-xl" onClick={() => window.location.href = `/recipe/${recipe.id}`}>View Recipe</button>
               </div>
             </div>
           </div>
