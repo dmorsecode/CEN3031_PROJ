@@ -1,0 +1,13 @@
+ .gitignore                                           |   2 [32m++[m
+ backend/app/__pycache__/__init__.cpython-310.pyc     | Bin [31m153[m -> [32m0[m bytes
+ backend/app/__pycache__/settings.cpython-310.pyc     | Bin [31m2420[m -> [32m0[m bytes
+ backend/app/__pycache__/settings.cpython-312.pyc     | Bin [31m3189[m -> [32m3491[m bytes
+ backend/app/__pycache__/urls.cpython-310.pyc         | Bin [31m1230[m -> [32m0[m bytes
+ backend/app/__pycache__/wsgi.cpython-310.pyc         | Bin [31m548[m -> [32m0[m bytes
+ backend/app/settings.py                              |   8 [32m++++++[m[31m--[m
+ backend/recipes/__pycache__/__init__.cpython-310.pyc | Bin [31m157[m -> [32m0[m bytes
+ backend/recipes/__pycache__/admin.cpython-310.pyc    | Bin [31m305[m -> [32m0[m bytes
+ backend/recipes/__pycache__/apps.cpython-310.pyc     | Bin [31m438[m -> [32m0[m bytes
+ backend/recipes/__pycache__/models.cpython-310.pyc   | Bin [31m1053[m -> [32m0[m bytes
+ backend/requirements.txt                             |   2 [32m++[m
+ 12 files changed, 10 insertions(+), 2 deletions(-)
