@@ -41,6 +41,7 @@ urlpatterns = [
     path('category/<int:pk>/', views.CategoryRecipe.as_view(), name='get_create_delete_category'),
     path('recipeingredient/', views.RecipeIngredientView.as_view(), name='create_recipeingredient'),
     path('backup_recipe/<int:pk>/', views.BackupRecipeView.as_view()),
-    path('backup_recipe/', views.BackupRecipeView.as_view())
+    path('backup_recipe/', views.BackupRecipeView.as_view()),
+    path('get_recipe_ingredients/<int:recipe_id>', views.RecipeIngredientView.as_view())
 
 ]
