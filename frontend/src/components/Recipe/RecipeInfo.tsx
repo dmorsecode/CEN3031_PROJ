@@ -97,7 +97,6 @@ function RecipeInfo({ title, category, description, prep, cook, servings, editab
           <input type="text" placeholder="0"
                  onChange={(e) => setServings(parseInt(e.currentTarget.value))}
                  className={`w-1/4 text-center border-2 border-neutral-400 border-dashed px-2 rounded-sm ${servingsView ? '' : 'opacity-50'}`} />
-          <p>min</p>
         </div>
       </div>
     </div>
