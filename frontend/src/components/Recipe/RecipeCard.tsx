@@ -3,11 +3,13 @@ import RecipeInfo from 'components/Recipe/RecipeInfo'
 import IngredientList from './IngredientList'
 import InstructionList from './InstructionList'
 import { useEffect, useState } from 'react'
+import { Navigate, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 
 function RecipeCard({ recipe, editable }: { recipe?: any, editable?: boolean }) {
   const [recipeView, setRecipe] = useState(recipe ?? { info: {}, instructions: null, ingredients: [] })
   const [servingsMultiplier, setServingsMultiplier] = useState(recipe && recipe.info ? recipe.info.servings : 1)
+  const navigate = useNavigate();
 
   function addIngredient(amt: any, unit: any, ingredient: { name: string, perKg: string }) {
     if (!amt) amt = 1
@@ -97,7 +99,7 @@ function RecipeCard({ recipe, editable }: { recipe?: any, editable?: boolean }) 
             // }
           })
             .then((res) => {
-              // console.log(res)
+              navigate('/recipes')
             })
             .catch((err) => console.log(err))
         }
