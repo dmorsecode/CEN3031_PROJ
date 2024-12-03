@@ -31,6 +31,21 @@ function HomePage() {
           .then((res) => {
             setProfile(res.data)
             console.log(res.data);
+            // make an axios post request to our api at http://134.209.114.122:8000/user/ to create a new user. send the email, given_name + family_name, and id
+            axios.post('http://134.209.114.122:8000/user/', {
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              token: user.access_token,
+              body: {
+                token: user.access_token,
+                email: res.data.email,
+                name: res.data.given_name + ' ' + res.data.family_name,
+                google_id: res.data.id
+              }
+            })
+              .then((res) => console.log(res))
+              .catch((err) => console.log(err))
           })
           .catch((err) => console.log(err))
       }
