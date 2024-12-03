@@ -6,7 +6,7 @@ from rest_framework import status, generics
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.views import APIView
 from google.oauth2 import id_token
 from google.auth.transport import requests
@@ -102,6 +102,8 @@ class RecipeView(APIView):
             serializer = RecipeSerializer(data = request.data) #Deserialize data
             serializer.is_valid(raise_exception=True) #Validate Data
             serializer.save() #Saves recipe
+            permission_classes = [IsAuthenticated]
+
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         
         except ValidationError as ve: #Handles validation errors
@@ -402,6 +404,113 @@ class GoogleLoginView(APIView):
         
         user.delete()
         return Response({'message': 'User deleted succesfully.'}, status=status.HTTP_204_NO_CONTENT)
+    
+class RecipeIngredientView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        try:
+            serializer = RecipeIngredientSerializer(data = request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+        except ValidationError as ve:
+            return Response({
+                'error':'Validation Error',
+                'message':ve.detail
+            })
+    
+        except Exception as e:
+            return Response({
+                'error':'An unexpected error occured',
+                'details': str(e)
+            })
+        
+# The original recipe view stopped working so I made a backup
+class BackupRecipeView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, pk): #Gets recipe
+        try:
+            recipe = Recipe.objects.get(pk = pk)
+        except Recipe.DoesNotExist:
+            return Response({'error':'Category could not be found'}, status= status.HTTP_404_NOT_FOUND)
+        
+        except ValidationError:
+            return Response({'error':'Invalid category ID'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        except Exception as e: #Generic error handling
+            return Response({
+                'error':'An unexpected error occured',
+                'details': str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        serializer = RecipeSerializer(recipe)
+        return Response({recipe.title : serializer.data}, status=status.HTTP_200_OK)
+    
+    def post(self, request): #Create recipe
+        try:
+            serializer = RecipeSerializer(data = request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+        except ValidationError as ve:
+            return Response({
+                'error':'Validation Error',
+                'message':ve.detail
+            })
+        
+        except Exception as e:
+            return Response({
+                'error':'An unexpected error occured',
+                'details': str(e)
+            })
+    def put(self, request, pk):
+        
+        try:
+            recipe = Recipe.objects.get(pk = pk)
+        except Recipe.DoesNotExist:
+            return Response({'error':'Recipe not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+        try:
+            serializer = RecipeSerializer(recipe, data = request.data) #Deserializes data
+            serializer.is_valid(raise_exception=True) 
+            serializer.save() #Updates recipe
+            return Response(serializer.data, status= status.HTTP_200_OK)
+        
+        except ValidationError as ve: #Handles validation errors
+            return Response({
+                'error':'Validation Error',
+                'details': ve.detail
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        except Exception as e: #Generic error handling
+            return Response({
+                'error':'An unexpected error occured',
+                'details': str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+    
+    def delete(self, request, pk):
+        try:
+            recipe = Recipe.objects.get(pk = pk)
+        except recipe.DoesNotExist:
+            return Response({'error':'Recipe not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+        except ValidationError: 
+            return Response({'error':'Invalid ingredient ID'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        except Exception as e: #Generic error handling
+            return Response({
+                'error':'An unexpected error occured.',
+                'details': str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        recipe.delete()
+        return Response({'message': 'Category deleted succesfully.'}, status=status.HTTP_204_NO_CONTENT)
+
 
 
 
