@@ -1,6 +1,6 @@
 ﻿import { useEffect, useState } from 'react'
 
-function RecipeInfo({ title, category, description, prep, cook, servings, editable, modifyServings }: {
+function RecipeInfo({ title, category, description, prep, cook, servings, editable, modifyServings, sendRecipe }: {
   title: string,
   category: string,
   description: string,
@@ -8,7 +8,8 @@ function RecipeInfo({ title, category, description, prep, cook, servings, editab
   cook: number,
   servings: number,
   editable: boolean | undefined,
-  modifyServings: any
+  modifyServings: any,
+  sendRecipe: any
 }) {
   const [titleView, setTitle] = useState(title)
   const [descriptionView, setDescription] = useState(description)
@@ -23,6 +24,24 @@ function RecipeInfo({ title, category, description, prep, cook, servings, editab
     modifyServings(multiplier)
   }
 
+  function sendRecipeInfo(title: string, desc: string, prep: number, cook: number, servings: number, cat: string) {
+    setTitle(title);
+    setDescription(desc);
+    setPrep(prep);
+    setCook(cook);
+    setServings(servings);
+    setCategory(cat);
+    let info = {
+      title: title,
+      description: desc,
+      prepTime: prep,
+      cookTime: cook,
+      servings: servings,
+      category: cat
+    }
+    sendRecipe(info)
+  }
+
   useEffect(() => {
     setTitle(title)
     setDescription(description)
@@ -34,7 +53,7 @@ function RecipeInfo({ title, category, description, prep, cook, servings, editab
 
   if (editable) return (
     <div className="flex flex-col w-full items-center justify-center p-2 h-full">
-      <div className="flex gap-x-4">
+      <div className="flex gap-x-4 items-center">
         <input type="text" placeholder="Recipe Name"
                onChange={(e) => setTitle(e.currentTarget.value)}
                className={`text-2xl text-center border-2 border-neutral-400 border-dashed p-2 rounded-sm ${titleView ? '' : 'opacity-50'}`} />
@@ -45,6 +64,9 @@ function RecipeInfo({ title, category, description, prep, cook, servings, editab
           <option>Lunch</option>
           <option>Dinner</option>
         </select>
+        <button className="btn btn-md w-1/4 rounded-lg btn-neutral text-white text-lg font-bold" onClick={() => sendRecipeInfo(titleView, descriptionView, prepView, cookView, servingsView, categoryView)}>
+          SUBMIT
+        </button>
       </div>
       <div className="flex-col items-center hidden md:flex h-full w-full">
         <div className="divider divider-neutral opacity-50 w-full m-y-2 hidden lg:flex" />
@@ -63,7 +85,7 @@ function RecipeInfo({ title, category, description, prep, cook, servings, editab
         </div>
         <div className="divider divider-neutral opacity-50 divider-horizontal !m-0" />
         <div className="flex basis-1/3 gap-2 items-center justify-center">
-          <p>Prep Time:</p>
+          <p>Cook Time:</p>
           <input type="text" placeholder="0"
                  onChange={(e) => setCook(parseInt(e.currentTarget.value))}
                  className={`w-1/4 text-center border-2 border-neutral-400 border-dashed px-2 rounded-sm ${cookView ? '' : 'opacity-50'}`} />
@@ -71,7 +93,7 @@ function RecipeInfo({ title, category, description, prep, cook, servings, editab
         </div>
         <div className="divider divider-neutral opacity-50 divider-horizontal !m-0" />
         <div className="flex basis-1/3 gap-2 items-center justify-center">
-          <p>Prep Time:</p>
+          <p>Servings:</p>
           <input type="text" placeholder="0"
                  onChange={(e) => setServings(parseInt(e.currentTarget.value))}
                  className={`w-1/4 text-center border-2 border-neutral-400 border-dashed px-2 rounded-sm ${servingsView ? '' : 'opacity-50'}`} />

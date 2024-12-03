@@ -1,5 +1,6 @@
 ﻿import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios'
 
 const recipe1 = {
   id: 0,
@@ -37,7 +38,6 @@ function HomePage() {
   }
 
   function handleSortChange(sort: string) {
-    console.log(sort)
     recipes.sort((a, b) => {
       switch (sort) {
         case 'Emissions':
@@ -52,25 +52,35 @@ function HomePage() {
           return 0
       }
     })
-    setSelectedSort(sort)
+    setSelectedSort(sort);
   }
 
   useEffect(() => {
-    fetchData();
+    fetchData().then(() => handleSortChange(selectedSort))
   }, [])
 
   const fetchData = async () => {
-    const response = await fetch("http://134.209.114.122:8000/get_recipe_list/");
-    const data = await response.json();
-    // console.log(data.ingredients);
-    // each object in data.ingredients has an id, name, and carbon_emission field. we only care about the name and emissions, so filter it out into an array
-    console.log(data.recipes);
-    // change prep_time and cook_time to ints
-    data.recipes.forEach((recipe: { prep_time: any, cook_time: any }) => {
-      recipe.prep_time = parseInt(recipe.prep_time)
-      recipe.cook_time = parseInt(recipe.cook_time)
-    })
-    setRecipes(data.recipes);
+    axios.get('http://134.209.114.122:8000/get_recipe_list/').then((res) => {
+      res.data.recipes.forEach((recipe: { prep_time: any, cook_time: any }) => {
+        recipe.prep_time = parseInt(recipe.prep_time)
+        recipe.cook_time = parseInt(recipe.cook_time)
+      });
+      res.data.recipes.sort((a: any, b: any) => {
+        switch (selectedSort) {
+          case 'Emissions':
+            return b.total_emission - a.total_emission
+          case 'Servings':
+            return b.servings - a.servings
+          case 'Ingredients':
+            return b.ingredients.length - a.ingredients.length
+          case 'Time':
+            return (b.prep_time + b.cook_time) - (a.prep_time + a.cook_time)
+          default:
+            return 0
+        }
+      })
+      setRecipes(res.data.recipes)
+    });
   };
 
   const breakfastIcon = (
@@ -134,9 +144,9 @@ function HomePage() {
               <li><a onClick={() => handleSortChange('Emissions')}
                      className={`transition-colors duration-200 ${selectedSort === 'Emissions' ? 'active' : ''}`}>Emissions</a>
               </li>
-              <li><a onClick={() => handleSortChange('Servings')}
-                     className={`transition-colors duration-200 ${selectedSort === 'Servings' ? 'active' : ''}`}>Servings</a>
-              </li>
+              {/*<li><a onClick={() => handleSortChange('Servings')}*/}
+              {/*       className={`transition-colors duration-200 ${selectedSort === 'Servings' ? 'active' : ''}`}>Servings</a>*/}
+              {/*</li>*/}
               <li><a onClick={() => handleSortChange('Ingredients')}
                      className={`transition-colors duration-200 ${selectedSort === 'Ingredients' ? 'active' : ''}`}>Ingredients</a>
               </li>
@@ -161,7 +171,7 @@ function HomePage() {
                   <p className="pt-4"><span
                     className="font-bold text-blue-600">Total Time:</span> {recipe.prep_time + recipe.cook_time} <span
                     className="text-sm">minutes</span></p>
-                  <p className="pt-4"><span className="font-bold text-green-600">Servings:</span> {recipe.servings}</p>
+                  <p className="pt-4"><span className="font-bold text-green-600">Ingredients:</span> {recipe.ingredients.length}</p>
                 </div>
                 <button className="btn btn-xs sm:btn-sm md:btn-md btn-info text-info-content text-xl" onClick={() => handleRedirect(recipe.id)}>View Recipe</button>
               </div>
