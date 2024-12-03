@@ -172,7 +172,7 @@ function HomePage() {
                   <p className="pt-4"><span
                     className="font-bold text-blue-600">Total Time:</span> {recipe.prep_time + recipe.cook_time} <span
                     className="text-sm">minutes</span></p>
-                  <p className="pt-4"><span className="font-bold text-green-600">Servings:</span> {recipe.servings}</p>
+                  {/*<p className="pt-4"><span className="font-bold text-green-600">Servings:</span> {recipe.servings}</p>*/}
                 </div>
                 <button className="btn btn-xs sm:btn-sm md:btn-md btn-info text-info-content text-xl" onClick={() => handleRedirect(recipe.id)}>View Recipe</button>
               </div>
