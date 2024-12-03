@@ -426,6 +426,24 @@ class RecipeIngredientView(APIView):
                 'error':'An unexpected error occured',
                 'details': str(e)
             })
+    def get(self, request, recipe_id):
+        try:
+            ingredients = RecipeIngredient.objects.filter(recipe_id=recipe_id).values()
+            return JsonResponse(list(ingredients), safe=False)
+
+    
+        except ValidationError as ve:
+            return Response({
+                'error':'Validation Error',
+                'message':ve.detail
+            })
+    
+        except Exception as e:
+            return Response({
+                'error':'An unexpected error occured',
+                'details': str(e)
+            })
+
         
 # The original recipe view stopped working so I made a backup
 class BackupRecipeView(APIView):
