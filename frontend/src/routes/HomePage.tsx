@@ -10,53 +10,62 @@ function HomePage() {
   const { user, setUser } = useContext(UserContext);
   const { profile, setProfile } = useContext(ProfileContext);
 
+  const [dailyEmission, setDailyEmission] = useState(0); // New state for synced daily emissions
+  const [dailyTrackedRecipes, setDailyTrackedRecipes] = useState(0); // New state for synced tracked recipes
+
   const login = useGoogleLogin({
     onSuccess: (codeResponse) => {
       console.log(codeResponse);
       setUser(codeResponse);
     },
     onError: (error) => console.log('Login Failed:', error)
-  })
+  });
 
-  useEffect(
-    () => {
-      if (user) {
-        axios
-          .get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${user.access_token}`, {
+  useEffect(() => {
+    // Sync local storage values with the widgets
+    const savedDailyEmission = localStorage.getItem('dailyEmission');
+    const savedDailyTrackedRecipes = localStorage.getItem('dailyTrackedRecipes');
+
+    if (savedDailyEmission) setDailyEmission(Number(savedDailyEmission));
+    if (savedDailyTrackedRecipes) setDailyTrackedRecipes(Number(savedDailyTrackedRecipes));
+  }, []); // Only runs on component mount
+
+  useEffect(() => {
+    if (user) {
+      axios
+        .get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${user.access_token}`, {
+          headers: {
+            Authorization: `Bearer ${user.access_token}`,
+            Accept: 'application/json'
+          }
+        })
+        .then((res) => {
+          setProfile(res.data);
+          console.log(res.data);
+          // Existing API request to create a new user
+          axios.post('http://134.209.114.122:8000/user/', {
             headers: {
-              Authorization: `Bearer ${user.access_token}`,
-              Accept: 'application/json'
+              'Content-Type': 'application/json',
+            },
+            token: user.access_token,
+            body: {
+              token: user.access_token,
+              email: res.data.email,
+              name: res.data.given_name + ' ' + res.data.family_name,
+              google_id: res.data.id
             }
           })
-          .then((res) => {
-            setProfile(res.data)
-            console.log(res.data);
-            // make an axios post request to our api at http://134.209.114.122:8000/user/ to create a new user. send the email, given_name + family_name, and id
-            axios.post('http://134.209.114.122:8000/user/', {
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              token: user.access_token,
-              body: {
-                token: user.access_token,
-                email: res.data.email,
-                name: res.data.given_name + ' ' + res.data.family_name,
-                google_id: res.data.id
-              }
-            })
-              .then((res) => console.log(res))
-              .catch((err) => console.log(err))
-          })
-          .catch((err) => console.log(err))
-      }
-    },
-    [user]
-  )
+            .then((res) => console.log(res))
+            .catch((err) => console.log(err));
+        })
+        .catch((err) => console.log(err));
+    }
+  }, [user]); // Runs when `user` changes
 
   const logOut = () => {
-    googleLogout()
-    setProfile(null)
-  }
+    googleLogout();
+    setProfile(null);
+  };
 
   if (!user) {
     return (
@@ -75,7 +84,7 @@ function HomePage() {
           <button className="btn btn-lg btn-neutral m-auto" onClick={() => login()}>SIGN IN WITH GOOGLE</button>
         )}
       </div>
-    )
+    );
   }
 
   return (
@@ -100,22 +109,20 @@ function HomePage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="p-4 bg-green-100 rounded-lg shadow">
                 <h2 className="text-xl font-bold">Total Carbon Emissions Today</h2>
-                <p className="text-2xl font-bold text-green-600">300 grams</p>
+                <p className="text-2xl font-bold text-green-600">{dailyEmission} grams</p>
               </div>
               <div className="p-4 bg-blue-100 rounded-lg shadow">
                 <h2 className="text-xl font-bold">Daily Average Carbon Emissions</h2>
-                <p className="text-2xl font-bold text-blue-600">280 grams</p>
-              </div>
-              <div className="p-4 bg-yellow-100 rounded-lg shadow">
-                <h2 className="text-xl font-bold">Weekly Average Carbon Emissions</h2>
-                <p className="text-2xl font-bold text-yellow-600">250 grams</p>
+                <p className="text-2xl font-bold text-blue-600">
+                  {dailyTrackedRecipes > 0 ? (dailyEmission / dailyTrackedRecipes).toFixed(2) : 0} grams
+                </p>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default HomePage
+export default HomePage;
