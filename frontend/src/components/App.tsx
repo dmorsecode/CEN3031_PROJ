@@ -21,7 +21,7 @@ function App() {
           <NavBar />
           <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route path="/recipe" element={<RecipeView />} />
+            <Route path="/recipe/:id" element={<RecipeView />} />
             <Route path="/tracker" element={<TrackerPage />} />
             <Route path="/recipe/create" element={<RecipeCreator />} />
             <Route path="/recipes" element={<RecipeListing />} />
