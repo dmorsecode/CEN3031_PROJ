@@ -6,7 +6,7 @@ from rest_framework import status, generics
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.views import APIView
 from google.oauth2 import id_token
 from google.auth.transport import requests
@@ -102,6 +102,8 @@ class RecipeView(APIView):
             serializer = RecipeSerializer(data = request.data) #Deserialize data
             serializer.is_valid(raise_exception=True) #Validate Data
             serializer.save() #Saves recipe
+            permission_classes = [IsAuthenticated]
+
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         
         except ValidationError as ve: #Handles validation errors
@@ -402,6 +404,29 @@ class GoogleLoginView(APIView):
         
         user.delete()
         return Response({'message': 'User deleted succesfully.'}, status=status.HTTP_204_NO_CONTENT)
+    
+class RecipeIngredientView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        try:
+            serializer = RecipeIngredientSerializer(data = request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+        except ValidationError as ve:
+            return Response({
+                'error':'Validation Error',
+                'message':ve.detail
+            })
+    
+        except Exception as e:
+            return Response({
+                'error':'An unexpected error occured',
+                'details': str(e)
+            })
+
 
 
 

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Recipe, Ingredient, Category, User
+from .models import Recipe, Ingredient, Category, User, RecipeIngredient
 from .validators import *
 
 class IngredientSerializer(serializers.ModelSerializer):
@@ -17,6 +17,19 @@ class CategorySerializer(serializers.ModelSerializer):
     
     name = serializers.CharField(validators=[validate_name])
     description = serializers.CharField(validators=[validate_description])
+
+class RecipeIngredientSerializer(serializers.ModelSerializer):
+    ingredient = serializers.SlugRelatedField(
+        queryset=Ingredient.objects.all(),
+        slug_field='name' 
+    )
+    recipe = serializers.SlugRelatedField(
+        queryset=Recipe.objects.all(),
+        slug_field='title'  # The field used for lookups
+    )
+    class Meta:
+        model = RecipeIngredient
+        fields = ['id', 'recipe', 'ingredient', 'amount']
 
 
 class RecipeSerializer(serializers.ModelSerializer):
