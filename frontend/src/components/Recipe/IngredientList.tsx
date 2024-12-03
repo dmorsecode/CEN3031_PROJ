@@ -21,7 +21,7 @@ function IngredientList({ ingredientList, editable, addIngredient, servings, ser
     }) => {
       total += ingredient.perKg * (ingredient.amount / servings * servingsMultiplier);
     });
-    return total;
+    return total.toFixed(2);
   }
 
   useEffect(() => {
@@ -39,7 +39,6 @@ function IngredientList({ ingredientList, editable, addIngredient, servings, ser
     const ingredients = data.ingredients.map((ingredient: { name: string, carbon_emission: number, id: number }) => {
       return { name: ingredient.name, perKg: ingredient.carbon_emission, id: ingredient.id };
     });
-    console.log(ingredients);
     setPossibleIngredients(ingredients);
   };
 
