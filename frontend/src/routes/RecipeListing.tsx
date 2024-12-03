@@ -61,7 +61,6 @@ function HomePage() {
 
   const fetchData = async () => {
     axios.get('http://134.209.114.122:8000/get_recipe_list/').then((res) => {
-      console.log(res.data.recipes)
       res.data.recipes.forEach((recipe: { prep_time: any, cook_time: any }) => {
         recipe.prep_time = parseInt(recipe.prep_time)
         recipe.cook_time = parseInt(recipe.cook_time)
@@ -145,9 +144,9 @@ function HomePage() {
               <li><a onClick={() => handleSortChange('Emissions')}
                      className={`transition-colors duration-200 ${selectedSort === 'Emissions' ? 'active' : ''}`}>Emissions</a>
               </li>
-              <li><a onClick={() => handleSortChange('Servings')}
-                     className={`transition-colors duration-200 ${selectedSort === 'Servings' ? 'active' : ''}`}>Servings</a>
-              </li>
+              {/*<li><a onClick={() => handleSortChange('Servings')}*/}
+              {/*       className={`transition-colors duration-200 ${selectedSort === 'Servings' ? 'active' : ''}`}>Servings</a>*/}
+              {/*</li>*/}
               <li><a onClick={() => handleSortChange('Ingredients')}
                      className={`transition-colors duration-200 ${selectedSort === 'Ingredients' ? 'active' : ''}`}>Ingredients</a>
               </li>
@@ -172,7 +171,7 @@ function HomePage() {
                   <p className="pt-4"><span
                     className="font-bold text-blue-600">Total Time:</span> {recipe.prep_time + recipe.cook_time} <span
                     className="text-sm">minutes</span></p>
-                  {/*<p className="pt-4"><span className="font-bold text-green-600">Servings:</span> {recipe.servings}</p>*/}
+                  <p className="pt-4"><span className="font-bold text-green-600">Ingredients:</span> {recipe.ingredients.length}</p>
                 </div>
                 <button className="btn btn-xs sm:btn-sm md:btn-md btn-info text-info-content text-xl" onClick={() => handleRedirect(recipe.id)}>View Recipe</button>
               </div>

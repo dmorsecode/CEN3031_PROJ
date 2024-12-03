@@ -93,7 +93,6 @@ function HomePage() {
       })
         .then((res) => {
           let ingredients = newRecipe.ingredients
-          console.log(ingredients, res.data)
           for (let i = 0; i < res.data.length; i++) {
             ingredients[i].amount = res.data[i].amount
           }
